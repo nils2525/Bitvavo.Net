@@ -1,4 +1,5 @@
 using Bitvavo.Net.Objects.Models.Socket;
+using CryptoExchange.Net;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Errors;
 using CryptoExchange.Net.Sockets;
@@ -12,23 +13,21 @@ namespace Bitvavo.Net.Objects.Sockets
     /// <para>
     /// Bitvavo replies to a subscribe/unsubscribe with either:
     /// <list type="bullet">
-    /// <item>a success event - <c>{"event":"subscribed",...}</c> or <c>{"event":"unsubscribed",...}</c>; or</item>
-    /// <item>an action-scoped error - <c>{"action":"subscribe","errorCode":...,"error":"..."}</c>.</item>
+    /// <item>a success event - <c>{"event":"subscribed","requestId":N,...}</c> or <c>{"event":"unsubscribed","requestId":N,...}</c>; or</item>
+    /// <item>an action-scoped error - <c>{"action":"subscribe","requestId":N,"errorCode":...,"error":"..."}</c>.</item>
     /// </list>
-    /// We route both shapes into <see cref="BitvavoSubscriptionResponse"/> via the <c>subscribed</c>/<c>unsubscribed</c>/<c>subscribe</c>/<c>unsubscribe</c>
-    /// type identifiers so the query consumes them silently and surfaces a <see cref="ServerError"/> when an error code is returned.
+    /// Both shapes echo the client-supplied <c>requestId</c>; this query assigns a fresh id on
+    /// construction and routes by it, so concurrent subscribes on a single connection are
+    /// disambiguated. The ack is consumed silently on success and surfaced as a
+    /// <see cref="ServerError"/> on failure.
     /// </para>
     /// </summary>
     internal class BitvavoQuery : Query<BitvavoSubscriptionResponse>
     {
-        public BitvavoQuery(BitvavoSocketRequest request, bool authenticated, int weight = 1) : base(request, authenticated, weight)
+        public BitvavoQuery(BitvavoSocketRequest request, bool authenticated, int weight = 1) : base(AssignRequestId(request), authenticated, weight)
         {
-            // Match every possible response shape the server can produce for a subscribe/unsubscribe action.
-            // Per Bitvavo's docs and observed behavior the "topic" we need to match against (channel name) is
-            // not present at message-handler time, so we route by type identifier only - one Bitvavo subscribe/unsubscribe
-            // is in flight per connection at a time, which makes ambiguity impossible.
             MessageRouter = MessageRouter.CreateWithoutTopicFilter<BitvavoSubscriptionResponse>(
-                ["subscribed", "unsubscribed", "subscribe", "unsubscribe"], HandleMessage);
+                request.RequestId.ToString(), HandleMessage);
         }
 
         public CallResult<BitvavoSubscriptionResponse> HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitvavoSubscriptionResponse message)
@@ -41,6 +40,12 @@ namespace Bitvavo.Net.Objects.Sockets
             }
 
             return new CallResult<BitvavoSubscriptionResponse>(message, originalData, null);
+        }
+
+        private static BitvavoSocketRequest AssignRequestId(BitvavoSocketRequest request)
+        {
+            request.RequestId = ExchangeHelpers.NextId();
+            return request;
         }
     }
 }

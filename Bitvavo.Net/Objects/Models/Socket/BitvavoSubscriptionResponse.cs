@@ -6,10 +6,10 @@ namespace Bitvavo.Net.Objects.Models.Socket
     /// Response payload returned by the Bitvavo websocket server to a subscribe/unsubscribe request.
     /// <para>
     /// Bitvavo replies with one of two shapes:<br />
-    /// 1) Success:   <c>{"event":"subscribed","subscriptions":{"trades":["BTC-EUR"]}}</c>  (or <c>"unsubscribed"</c> for an unsubscribe).<br />
-    /// 2) Failure:   <c>{"action":"subscribe","errorCode":205,"error":"market parameter UNK-NOWN is invalid."}</c>.<br />
-    /// Both shapes are deserialized into this single record so the originating <see cref="Bitvavo.Net.Objects.Sockets.BitvavoQuery"/>
-    /// can decide whether the request succeeded.
+    /// 1) Success:   <c>{"event":"subscribed","requestId":42,"subscriptions":{"trades":["BTC-EUR"]}}</c>  (or <c>"unsubscribed"</c> for an unsubscribe).<br />
+    /// 2) Failure:   <c>{"action":"subscribe","requestId":42,"errorCode":205,"error":"market parameter UNK-NOWN is invalid."}</c>.<br />
+    /// Both shapes carry the client-supplied <c>requestId</c>, which is what the framework uses
+    /// to match a response to its originating <see cref="Bitvavo.Net.Objects.Sockets.BitvavoQuery"/>.
     /// </para>
     /// </summary>
     internal record BitvavoSubscriptionResponse
@@ -25,6 +25,12 @@ namespace Bitvavo.Net.Objects.Models.Socket
         /// </summary>
         [JsonPropertyName("action")]
         public string? Action { get; set; }
+
+        /// <summary>
+        /// ["<c>requestId</c>"] Echo of the client-supplied request id.
+        /// </summary>
+        [JsonPropertyName("requestId")]
+        public long? RequestId { get; set; }
 
         /// <summary>
         /// ["<c>errorCode</c>"] Numeric error code (only present on failure).

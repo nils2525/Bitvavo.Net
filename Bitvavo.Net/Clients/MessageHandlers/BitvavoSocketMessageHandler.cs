@@ -7,8 +7,9 @@ using CryptoExchange.Net.Converters.SystemTextJson.MessageHandlers;
 namespace Bitvavo.Net.Clients.MessageHandlers
 {
     /// <summary>
-    /// Routes incoming websocket messages to the right subscription based on their <c>event</c> field
-    /// (and the <c>market</c> field for per-market events).
+    /// Routes incoming websocket messages to the right query/subscription. Subscribe/unsubscribe
+    /// responses are correlated by the echoed <c>requestId</c>; live data events are routed by
+    /// <c>event</c> + per-message topic (e.g. <c>market</c> for trade updates).
     /// </summary>
     internal class BitvavoSocketMessageHandler : JsonSocketMessageHandler
     {
@@ -21,6 +22,15 @@ namespace Bitvavo.Net.Clients.MessageHandlers
         }
 
         protected override MessageTypeDefinition[] TypeEvaluators { get; } = [
+            // Subscribe/unsubscribe acks carry the echoed `requestId`; this takes precedence over
+            // the `event`/`action` evaluators below so each query response routes to its query.
+            new MessageTypeDefinition {
+                ForceIfFound = true,
+                Fields = [
+                    new PropertyFieldReference("requestId"),
+                ],
+                TypeIdentifierCallback = x => x.FieldValue("requestId")!,
+            },
             // Most public stream messages (trade, ticker, ticker24h, candle, book) carry an "event" field.
             new MessageTypeDefinition {
                 Fields = [
@@ -28,7 +38,7 @@ namespace Bitvavo.Net.Clients.MessageHandlers
                 ],
                 TypeIdentifierCallback = x => x.FieldValue("event")!,
             },
-            // Subscription/auth/error responses carry an "action" field.
+            // Subscription/auth/error responses without a requestId fall back to the action.
             new MessageTypeDefinition {
                 Fields = [
                     new PropertyFieldReference("action"),

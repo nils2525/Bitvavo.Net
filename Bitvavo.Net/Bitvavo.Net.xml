@@ -162,11 +162,8 @@
         </member>
         <member name="T:Bitvavo.Net.BitvavoRateLimiters">
             <summary>
-            Rate limiter configuration for the Bitvavo API.
-            <para>
-            Bitvavo enforces a per-IP REST weight budget; the exact limits are documented at
-            <see href="https://docs.bitvavo.com/" />. Conservative defaults are configured here.
-            </para>
+            Rate limiter configuration for the Bitvavo API. All limits are sourced from
+            <see href="https://docs.bitvavo.com/docs/rate-limits/" />.
             </summary>
         </member>
         <member name="E:Bitvavo.Net.BitvavoRateLimiters.RateLimitTriggered">
@@ -298,8 +295,9 @@
         </member>
         <member name="T:Bitvavo.Net.Clients.MessageHandlers.BitvavoSocketMessageHandler">
             <summary>
-            Routes incoming websocket messages to the right subscription based on their <c>event</c> field
-            (and the <c>market</c> field for per-market events).
+            Routes incoming websocket messages to the right query/subscription. Subscribe/unsubscribe
+            responses are correlated by the echoed <c>requestId</c>; live data events are routed by
+            <c>event</c> + per-message topic (e.g. <c>market</c> for trade updates).
             </summary>
         </member>
         <member name="T:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApi">
@@ -491,6 +489,16 @@
             </summary>
         </member>
         <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.NullableInt32">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.Int64">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.NullableInt64">
             <summary>
             Defines the source generated JSON serialization contract metadata for a given type.
             </summary>
@@ -1142,6 +1150,15 @@
             ["<c>action</c>"] Action name, either <c>subscribe</c> or <c>unsubscribe</c>.
             </summary>
         </member>
+        <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoSocketRequest.RequestId">
+            <summary>
+            ["<c>requestId</c>"] Client-supplied id; Bitvavo echoes it back in both the success
+            (<c>{"event":"subscribed","requestId":...}</c>) and error
+            (<c>{"action":"subscribe","requestId":...,"errorCode":...}</c>) response. Used by the
+            framework's routing layer to match a response back to its originating query when several
+            requests share a single websocket connection.
+            </summary>
+        </member>
         <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoSocketRequest.Channels">
             <summary>
             ["<c>channels</c>"] Channels to subscribe or unsubscribe from.
@@ -1167,10 +1184,10 @@
             Response payload returned by the Bitvavo websocket server to a subscribe/unsubscribe request.
             <para>
             Bitvavo replies with one of two shapes:<br />
-            1) Success:   <c>{"event":"subscribed","subscriptions":{"trades":["BTC-EUR"]}}</c>  (or <c>"unsubscribed"</c> for an unsubscribe).<br />
-            2) Failure:   <c>{"action":"subscribe","errorCode":205,"error":"market parameter UNK-NOWN is invalid."}</c>.<br />
-            Both shapes are deserialized into this single record so the originating <see cref="T:Bitvavo.Net.Objects.Sockets.BitvavoQuery"/>
-            can decide whether the request succeeded.
+            1) Success:   <c>{"event":"subscribed","requestId":42,"subscriptions":{"trades":["BTC-EUR"]}}</c>  (or <c>"unsubscribed"</c> for an unsubscribe).<br />
+            2) Failure:   <c>{"action":"subscribe","requestId":42,"errorCode":205,"error":"market parameter UNK-NOWN is invalid."}</c>.<br />
+            Both shapes carry the client-supplied <c>requestId</c>, which is what the framework uses
+            to match a response to its originating <see cref="T:Bitvavo.Net.Objects.Sockets.BitvavoQuery"/>.
             </para>
             </summary>
         </member>
@@ -1182,6 +1199,11 @@
         <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoSubscriptionResponse.Action">
             <summary>
             ["<c>action</c>"] Set to <c>subscribe</c> or <c>unsubscribe</c> on action-scoped errors, absent on success.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoSubscriptionResponse.RequestId">
+            <summary>
+            ["<c>requestId</c>"] Echo of the client-supplied request id.
             </summary>
         </member>
         <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoSubscriptionResponse.ErrorCode">
@@ -1312,11 +1334,13 @@
             <para>
             Bitvavo replies to a subscribe/unsubscribe with either:
             <list type="bullet">
-            <item>a success event - <c>{"event":"subscribed",...}</c> or <c>{"event":"unsubscribed",...}</c>; or</item>
-            <item>an action-scoped error - <c>{"action":"subscribe","errorCode":...,"error":"..."}</c>.</item>
+            <item>a success event - <c>{"event":"subscribed","requestId":N,...}</c> or <c>{"event":"unsubscribed","requestId":N,...}</c>; or</item>
+            <item>an action-scoped error - <c>{"action":"subscribe","requestId":N,"errorCode":...,"error":"..."}</c>.</item>
             </list>
-            We route both shapes into <see cref="T:Bitvavo.Net.Objects.Models.Socket.BitvavoSubscriptionResponse"/> via the <c>subscribed</c>/<c>unsubscribed</c>/<c>subscribe</c>/<c>unsubscribe</c>
-            type identifiers so the query consumes them silently and surfaces a <see cref="T:CryptoExchange.Net.Objects.ServerError"/> when an error code is returned.
+            Both shapes echo the client-supplied <c>requestId</c>; this query assigns a fresh id on
+            construction and routes by it, so concurrent subscribes on a single connection are
+            disambiguated. The ack is consumed silently on success and surfaced as a
+            <see cref="T:CryptoExchange.Net.Objects.ServerError"/> on failure.
             </para>
             </summary>
         </member>

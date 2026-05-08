@@ -93,11 +93,8 @@ namespace Bitvavo.Net
     }
 
     /// <summary>
-    /// Rate limiter configuration for the Bitvavo API.
-    /// <para>
-    /// Bitvavo enforces a per-IP REST weight budget; the exact limits are documented at
-    /// <see href="https://docs.bitvavo.com/" />. Conservative defaults are configured here.
-    /// </para>
+    /// Rate limiter configuration for the Bitvavo API. All limits are sourced from
+    /// <see href="https://docs.bitvavo.com/docs/rate-limits/" />.
     /// </summary>
     public class BitvavoRateLimiters
     {
@@ -120,19 +117,34 @@ namespace Bitvavo.Net
 
         private void Initialize()
         {
+            // REST: 1000 weight points / minute. Tracked per API key when authenticated;
+            // when no key is configured the per-key bucket effectively scopes to the process.
+            // Exceeding triggers HTTP 429 with errorCode 105 (1-min lockout for keyed users,
+            // 15-min for IP-based unauthenticated users).
             Rest = new RateLimitGate("Rest")
-                .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, new LimitItemTypeFilter(RateLimitItemType.Request), 1000, TimeSpan.FromMinutes(1), RateLimitWindowType.Sliding));
-            Socket = new RateLimitGate("Socket")
-                .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, new LimitItemTypeFilter(RateLimitItemType.Connection), 30, TimeSpan.FromMinutes(1), RateLimitWindowType.Sliding));
+                .AddGuard(new RateLimitGuard(RateLimitGuard.PerApiKey, new LimitItemTypeFilter(RateLimitItemType.Request), 1000, TimeSpan.FromMinutes(1), RateLimitWindowType.Sliding));
+
+            // Exchange WebSocket API: 5000 messages / second per session (= per connection).
+            // Exceeding triggers HTTP 429 with errorCode 112.
+            ExchangeSocket = new RateLimitGate("ExchangeSocket")
+                .AddGuard(new RateLimitGuard(RateLimitGuard.PerConnection, new LimitItemTypeFilter(RateLimitItemType.Request), 5000, TimeSpan.FromSeconds(1), RateLimitWindowType.Sliding));
+
+            // Market Data Pro WebSocket API: 50 messages / second per session (= per connection).
+            // Exceeding triggers HTTP 429 with errorCode 112.
+            MarketDataProSocket = new RateLimitGate("MarketDataProSocket")
+                .AddGuard(new RateLimitGuard(RateLimitGuard.PerConnection, new LimitItemTypeFilter(RateLimitItemType.Request), 50, TimeSpan.FromSeconds(1), RateLimitWindowType.Sliding));
 
             Rest.RateLimitTriggered += (x) => RateLimitTriggered?.Invoke(x);
             Rest.RateLimitUpdated += (x) => RateLimitUpdated?.Invoke(x);
-            Socket.RateLimitTriggered += (x) => RateLimitTriggered?.Invoke(x);
-            Socket.RateLimitUpdated += (x) => RateLimitUpdated?.Invoke(x);
+            ExchangeSocket.RateLimitTriggered += (x) => RateLimitTriggered?.Invoke(x);
+            ExchangeSocket.RateLimitUpdated += (x) => RateLimitUpdated?.Invoke(x);
+            MarketDataProSocket.RateLimitTriggered += (x) => RateLimitTriggered?.Invoke(x);
+            MarketDataProSocket.RateLimitUpdated += (x) => RateLimitUpdated?.Invoke(x);
         }
 
 
         internal IRateLimitGate Rest { get; private set; }
-        internal IRateLimitGate Socket { get; private set; }
+        internal IRateLimitGate ExchangeSocket { get; private set; }
+        internal IRateLimitGate MarketDataProSocket { get; private set; }
     }
 }

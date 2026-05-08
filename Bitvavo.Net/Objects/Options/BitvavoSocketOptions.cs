@@ -18,7 +18,8 @@ namespace Bitvavo.Net.Objects.Options
         /// </summary>
         internal static BitvavoSocketOptions Default { get; set; } = new BitvavoSocketOptions
         {
-            Environment = BitvavoEnvironment.Live
+            Environment = BitvavoEnvironment.Live,
+            SocketSubscriptionsCombineTarget = 10,
         };
 
         /// <summary>

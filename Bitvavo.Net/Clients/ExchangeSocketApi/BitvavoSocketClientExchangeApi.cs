@@ -36,7 +36,7 @@ namespace Bitvavo.Net.Clients.ExchangeSocketApi
         internal BitvavoSocketClientExchangeApi(ILogger logger, BitvavoSocketOptions options)
             : base(logger, options.Environment.SocketExchangeBaseAddress, options, options.ExchangeOptions)
         {
-            RateLimiter = BitvavoExchange.RateLimiter.Socket;
+            RateLimiter = BitvavoExchange.RateLimiter.ExchangeSocket;
         }
         #endregion
 
@@ -72,7 +72,7 @@ namespace Bitvavo.Net.Clients.ExchangeSocketApi
             });
 
             var subscription = new BitvavoTradeSubscription(_logger, market, internalHandler);
-            return SubscribeAsync(BaseAddress, subscription, ct);
+            return SubscribeAsync(subscription, ct);
         }
 
         /// <inheritdoc />
@@ -88,7 +88,7 @@ namespace Bitvavo.Net.Clients.ExchangeSocketApi
             });
 
             var subscription = new BitvavoTicker24hSubscription(_logger, markets, internalHandler);
-            return SubscribeAsync(BaseAddress, subscription, ct);
+            return SubscribeAsync(subscription, ct);
         }
         #endregion
     }

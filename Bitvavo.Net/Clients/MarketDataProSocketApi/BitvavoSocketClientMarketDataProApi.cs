@@ -35,7 +35,7 @@ namespace Bitvavo.Net.Clients.MarketDataProSocketApi
         internal BitvavoSocketClientMarketDataProApi(ILogger logger, BitvavoSocketOptions options)
             : base(logger, options.Environment.SocketMarketDataProBaseAddress, options, options.MarketDataProOptions)
         {
-            RateLimiter = BitvavoExchange.RateLimiter.Socket;
+            RateLimiter = BitvavoExchange.RateLimiter.MarketDataProSocket;
         }
         #endregion
 
@@ -71,7 +71,7 @@ namespace Bitvavo.Net.Clients.MarketDataProSocketApi
             });
 
             var subscription = new BitvavoTradeSubscription(_logger, market, internalHandler);
-            return SubscribeAsync(BaseAddress, subscription, ct);
+            return SubscribeAsync(subscription, ct);
         }
         #endregion
     }
