@@ -1,0 +1,61 @@
+using Bitvavo.Net.Clients.MessageHandlers;
+using Bitvavo.Net.Interfaces.Clients.SpotApi;
+using Bitvavo.Net.Objects.Options;
+using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Clients;
+using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using CryptoExchange.Net.Interfaces;
+using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Objects.Errors;
+using CryptoExchange.Net.SharedApis;
+using Microsoft.Extensions.Logging;
+
+namespace Bitvavo.Net.Clients.SpotApi
+{
+    /// <inheritdoc cref="IBitvavoRestClientSpotApi" />
+    internal partial class BitvavoRestClientSpotApi : RestApiClient<BitvavoEnvironment, BitvavoAuthenticationProvider, BitvavoCredentials>, IBitvavoRestClientSpotApi
+    {
+        #region fields
+        /// <inheritdoc />
+        public new BitvavoRestOptions ClientOptions => (BitvavoRestOptions)base.ClientOptions;
+
+        protected override ErrorMapping ErrorMapping { get; } = BitvavoErrors.RestErrorMapping;
+
+        protected override IRestMessageHandler MessageHandler { get; } = new BitvavoRestMessageHandler(BitvavoErrors.RestErrorMapping);
+        #endregion
+
+        /// <inheritdoc />
+        public string ExchangeName => "Bitvavo";
+
+        /// <inheritdoc />
+        public IBitvavoRestClientSpotApiExchangeData ExchangeData { get; }
+
+        public BitvavoRestClientSpotApi(ILogger logger, HttpClient? httpClient, BitvavoRestOptions options) :
+            base(logger, httpClient, options.Environment.RestBaseAddress, options, options.ApiOptions)
+        {
+            RequestBodyFormat = RequestBodyFormat.Json;
+            RequestBodyEmptyContent = string.Empty;
+
+            ExchangeData = new BitvavoRestClientSpotApiExchangeData(this);
+        }
+
+        protected override IMessageSerializer CreateSerializer()
+            => new SystemTextJsonMessageSerializer(SerializerOptions.WithConverters(BitvavoExchange._serializerContext));
+
+        protected override BitvavoAuthenticationProvider CreateAuthenticationProvider(BitvavoCredentials credentials)
+            => new BitvavoAuthenticationProvider(credentials);
+
+        /// <inheritdoc />
+        public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
+                => BitvavoExchange.FormatSymbol(baseAsset, quoteAsset, tradingMode, deliverTime);
+
+        internal Task<WebCallResult<T>> SendAsync<T>(RequestDefinition definition, ParameterCollection? parameters, CancellationToken cancellationToken, int? weight = null) where T : class
+            => SendToAddressAsync<T>(BaseAddress, definition, parameters, cancellationToken, weight);
+
+        internal async Task<WebCallResult<T>> SendToAddressAsync<T>(string baseAddress, RequestDefinition definition, ParameterCollection? parameters, CancellationToken cancellationToken, int? weight = null) where T : class
+        {
+            return await base.SendAsync<T>(baseAddress, definition, parameters, cancellationToken, null, weight).ConfigureAwait(false);
+        }
+    }
+}

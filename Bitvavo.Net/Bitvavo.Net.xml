@@ -1,0 +1,1364 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bitvavo.Net</name>
+    </assembly>
+    <members>
+        <member name="T:Bitvavo.Net.BitvavoAuthenticationProvider">
+            <summary>
+            HMAC-SHA256 authentication for the Bitvavo REST API.
+            <para>
+            The signature input concatenates the millisecond-timestamp, HTTP method (uppercase),
+            the path (including <c>/v2</c> prefix and any query string) and the JSON-encoded body
+            (empty string for GET requests). The result is the lowercase hex HMAC-SHA256 of that
+            string with the API secret as key. See <see href="https://docs.bitvavo.com/" />.
+            </para>
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.BitvavoCredentials">
+            <summary>
+            Bitvavo API credentials
+            </summary>
+        </member>
+        <member name="M:Bitvavo.Net.BitvavoCredentials.#ctor">
+            <summary>
+            Create new credentials
+            </summary>
+        </member>
+        <member name="M:Bitvavo.Net.BitvavoCredentials.#ctor(CryptoExchange.Net.Authentication.HMACCredential)">
+            <summary>
+            Create new credentials providing HMAC credentials
+            </summary>
+            <param name="credential">HMAC Credentials</param>
+        </member>
+        <member name="M:Bitvavo.Net.BitvavoCredentials.#ctor(System.String,System.String)">
+            <summary>
+            Create new credentials providing credentials in HMAC format
+            </summary>
+            <param name="key">API key</param>
+            <param name="secret">API secret</param>
+        </member>
+        <member name="M:Bitvavo.Net.BitvavoCredentials.WithHMAC(System.String,System.String)">
+            <summary>
+            Specify the HMAC credentials
+            </summary>
+            <param name="key">API key</param>
+            <param name="secret">API secret</param>
+        </member>
+        <member name="M:Bitvavo.Net.BitvavoCredentials.Copy">
+            <inheritdoc />
+        </member>
+        <member name="T:Bitvavo.Net.BitvavoEnvironment">
+            <summary>
+            Bitvavo environments
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.BitvavoEnvironment.RestBaseAddress">
+            <summary>
+            Rest client address
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.BitvavoEnvironment.SocketExchangeBaseAddress">
+            <summary>
+            Exchange Socket API address (<c>wss://ws.bitvavo.com/v2/</c>)
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.BitvavoEnvironment.SocketMarketDataProBaseAddress">
+            <summary>
+            Market Data Pro Socket API address (<c>wss://ws-mdpro.bitvavo.com/v2/</c>)
+            </summary>
+        </member>
+        <member name="M:Bitvavo.Net.BitvavoEnvironment.#ctor">
+            <summary>
+            ctor for DI, use <see cref="M:Bitvavo.Net.BitvavoEnvironment.CreateCustom(System.String,System.String,System.String,System.String)"/> for creating a custom environment
+            </summary>
+        </member>
+        <member name="M:Bitvavo.Net.BitvavoEnvironment.GetEnvironmentByName(System.String)">
+            <summary>
+            Get the Bitvavo environment by name
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.BitvavoEnvironment.All">
+            <summary>
+            Available environment names
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Bitvavo.Net.BitvavoEnvironment.Live">
+            <summary>
+            Live environment
+            </summary>
+        </member>
+        <member name="M:Bitvavo.Net.BitvavoEnvironment.CreateCustom(System.String,System.String,System.String,System.String)">
+            <summary>
+            Create a custom environment
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.BitvavoErrors">
+            <summary>
+            Bitvavo error code mappings.
+            <see href="https://docs.bitvavo.com/" />
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.BitvavoExchange">
+            <summary>
+            Bitvavo exchange information and configuration
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.BitvavoExchange.Metadata">
+            <summary>
+            Platform metadata
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.BitvavoExchange.ExchangeName">
+            <summary>
+            Exchange name
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.BitvavoExchange.DisplayName">
+            <summary>
+            Display name
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.BitvavoExchange.ImageUrl">
+            <summary>
+            Url to exchange image
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.BitvavoExchange.Url">
+            <summary>
+            Url to the main website
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.BitvavoExchange.ApiDocsUrl">
+            <summary>
+            Urls to the API documentation
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.BitvavoExchange.Type">
+            <summary>
+            Type of exchange
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.BitvavoExchange.AssetAliases">
+            <summary>
+            Aliases for Bitvavo assets
+            </summary>
+        </member>
+        <member name="M:Bitvavo.Net.BitvavoExchange.FormatSymbol(System.String,System.String,CryptoExchange.Net.SharedApis.TradingMode,System.Nullable{System.DateTime})">
+            <summary>
+            Format a base and quote asset to a Bitvavo recognized symbol (<c>BASE-QUOTE</c>)
+            </summary>
+            <param name="baseAsset">Base asset</param>
+            <param name="quoteAsset">Quote asset</param>
+            <param name="tradingMode">Trading mode</param>
+            <param name="deliverTime">Delivery time for delivery futures</param>
+            <returns></returns>
+        </member>
+        <member name="P:Bitvavo.Net.BitvavoExchange.RateLimiter">
+            <summary>
+            Rate limiter configuration for the Bitvavo API
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.BitvavoRateLimiters">
+            <summary>
+            Rate limiter configuration for the Bitvavo API.
+            <para>
+            Bitvavo enforces a per-IP REST weight budget; the exact limits are documented at
+            <see href="https://docs.bitvavo.com/" />. Conservative defaults are configured here.
+            </para>
+            </summary>
+        </member>
+        <member name="E:Bitvavo.Net.BitvavoRateLimiters.RateLimitTriggered">
+            <summary>
+            Event for when a rate limit is triggered
+            </summary>
+        </member>
+        <member name="E:Bitvavo.Net.BitvavoRateLimiters.RateLimitUpdated">
+            <summary>
+            Event when the rate limit is updated. Note that it's only updated when a request is send, so there are no specific updates when the current usage is decaying.
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Clients.BitvavoRestClient">
+            <inheritdoc cref="T:Bitvavo.Net.Interfaces.Clients.IBitvavoRestClient" />
+        </member>
+        <member name="P:Bitvavo.Net.Clients.BitvavoRestClient.SpotApi">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.BitvavoRestClient.#ctor(System.Action{Bitvavo.Net.Objects.Options.BitvavoRestOptions})">
+            <summary>
+            Create a new instance of the BitvavoRestClient using provided options
+            </summary>
+            <param name="optionsDelegate">Option configuration delegate</param>
+        </member>
+        <member name="M:Bitvavo.Net.Clients.BitvavoRestClient.#ctor(System.Net.Http.HttpClient,Microsoft.Extensions.Logging.ILoggerFactory,Microsoft.Extensions.Options.IOptions{Bitvavo.Net.Objects.Options.BitvavoRestOptions})">
+            <summary>
+            Create a new instance of the BitvavoRestClient
+            </summary>
+            <param name="options">Option configuration</param>
+            <param name="loggerFactory">The logger factory</param>
+            <param name="httpClient">Http client for this client</param>
+        </member>
+        <member name="M:Bitvavo.Net.Clients.BitvavoRestClient.SetDefaultOptions(System.Action{Bitvavo.Net.Objects.Options.BitvavoRestOptions})">
+            <summary>
+            Set the default options to be used when creating new clients
+            </summary>
+            <param name="optionsDelegate">Option configuration delegate</param>
+        </member>
+        <member name="T:Bitvavo.Net.Clients.BitvavoSocketClient">
+            <inheritdoc cref="T:Bitvavo.Net.Interfaces.Clients.IBitvavoSocketClient" />
+        </member>
+        <member name="P:Bitvavo.Net.Clients.BitvavoSocketClient.ExchangeApi">
+            <inheritdoc />
+        </member>
+        <member name="P:Bitvavo.Net.Clients.BitvavoSocketClient.MarketDataProApi">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.BitvavoSocketClient.#ctor(System.Action{Bitvavo.Net.Objects.Options.BitvavoSocketOptions})">
+            <summary>
+            Create a new instance of the BitvavoSocketClient
+            </summary>
+            <param name="optionsDelegate">Option configuration delegate</param>
+        </member>
+        <member name="M:Bitvavo.Net.Clients.BitvavoSocketClient.#ctor(Microsoft.Extensions.Options.IOptions{Bitvavo.Net.Objects.Options.BitvavoSocketOptions},Microsoft.Extensions.Logging.ILoggerFactory)">
+            <summary>
+            Create a new instance of the BitvavoSocketClient
+            </summary>
+            <param name="loggerFactory">The logger factory</param>
+            <param name="options">Option configuration</param>
+        </member>
+        <member name="M:Bitvavo.Net.Clients.BitvavoSocketClient.SetApiCredentials(Bitvavo.Net.BitvavoCredentials)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.BitvavoSocketClient.SetDefaultOptions(System.Action{Bitvavo.Net.Objects.Options.BitvavoSocketOptions})">
+            <summary>
+            Set the default options to be used when creating new clients
+            </summary>
+            <param name="optionsDelegate">Option configuration delegate</param>
+        </member>
+        <member name="T:Bitvavo.Net.Clients.BitvavoUserClientProvider">
+            <inheritdoc />
+        </member>
+        <member name="P:Bitvavo.Net.Clients.BitvavoUserClientProvider.ExchangeName">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.BitvavoUserClientProvider.#ctor(System.Action{Bitvavo.Net.Objects.Options.BitvavoOptions})">
+            <summary>
+            ctor
+            </summary>
+            <param name="optionsDelegate">Options to use for created clients</param>
+        </member>
+        <member name="M:Bitvavo.Net.Clients.BitvavoUserClientProvider.#ctor(System.Net.Http.HttpClient,Microsoft.Extensions.Logging.ILoggerFactory,Microsoft.Extensions.Options.IOptions{Bitvavo.Net.Objects.Options.BitvavoRestOptions},Microsoft.Extensions.Options.IOptions{Bitvavo.Net.Objects.Options.BitvavoSocketOptions})">
+            <summary>
+            ctor
+            </summary>
+        </member>
+        <member name="M:Bitvavo.Net.Clients.BitvavoUserClientProvider.InitializeUserClient(System.String,Bitvavo.Net.BitvavoCredentials,Bitvavo.Net.BitvavoEnvironment)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.BitvavoUserClientProvider.ClearUserClients(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.BitvavoUserClientProvider.GetRestClient(System.String,Bitvavo.Net.BitvavoCredentials,Bitvavo.Net.BitvavoEnvironment)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.BitvavoUserClientProvider.GetSocketClient(System.String,Bitvavo.Net.BitvavoCredentials,Bitvavo.Net.BitvavoEnvironment)">
+            <inheritdoc />
+        </member>
+        <member name="T:Bitvavo.Net.Clients.ExchangeSocketApi.BitvavoSocketClientExchangeApi">
+            <inheritdoc cref="T:Bitvavo.Net.Interfaces.Clients.ExchangeSocketApi.IBitvavoSocketClientExchangeApi" />
+        </member>
+        <member name="P:Bitvavo.Net.Clients.ExchangeSocketApi.BitvavoSocketClientExchangeApi.ClientOptions">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.ExchangeSocketApi.BitvavoSocketClientExchangeApi.#ctor(Microsoft.Extensions.Logging.ILogger,Bitvavo.Net.Objects.Options.BitvavoSocketOptions)">
+            <summary>
+            Create a new instance of BitvavoSocketClientExchangeApi
+            </summary>
+        </member>
+        <member name="M:Bitvavo.Net.Clients.ExchangeSocketApi.BitvavoSocketClientExchangeApi.SubscribeToTradeUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitvavo.Net.Objects.Models.Socket.BitvavoTradeUpdate}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.ExchangeSocketApi.BitvavoSocketClientExchangeApi.SubscribeToTicker24hUpdatesAsync(System.String[],System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitvavo.Net.Objects.Models.Socket.BitvavoTicker24hUpdate}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Bitvavo.Net.Clients.MarketDataProSocketApi.BitvavoSocketClientMarketDataProApi">
+            <inheritdoc cref="T:Bitvavo.Net.Interfaces.Clients.MarketDataProSocketApi.IBitvavoSocketClientMarketDataProApi" />
+        </member>
+        <member name="P:Bitvavo.Net.Clients.MarketDataProSocketApi.BitvavoSocketClientMarketDataProApi.ClientOptions">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.MarketDataProSocketApi.BitvavoSocketClientMarketDataProApi.#ctor(Microsoft.Extensions.Logging.ILogger,Bitvavo.Net.Objects.Options.BitvavoSocketOptions)">
+            <summary>
+            Create a new instance of BitvavoSocketClientMarketDataProApi
+            </summary>
+        </member>
+        <member name="M:Bitvavo.Net.Clients.MarketDataProSocketApi.BitvavoSocketClientMarketDataProApi.SubscribeToTradeUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitvavo.Net.Objects.Models.Socket.BitvavoTradeUpdate}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Bitvavo.Net.Clients.MessageHandlers.BitvavoSocketMessageHandler">
+            <summary>
+            Routes incoming websocket messages to the right subscription based on their <c>event</c> field
+            (and the <c>market</c> field for per-market events).
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApi">
+            <inheritdoc cref="T:Bitvavo.Net.Interfaces.Clients.SpotApi.IBitvavoRestClientSpotApi" />
+        </member>
+        <member name="P:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApi.ClientOptions">
+            <inheritdoc />
+        </member>
+        <member name="P:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApi.ExchangeName">
+            <inheritdoc />
+        </member>
+        <member name="P:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApi.ExchangeData">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApi.FormatSymbol(System.String,System.String,CryptoExchange.Net.SharedApis.TradingMode,System.Nullable{System.DateTime})">
+            <inheritdoc />
+        </member>
+        <member name="T:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApiExchangeData">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApiExchangeData.GetServerTimeAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApiExchangeData.GetMarketsAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApiExchangeData.GetAssetsAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApiExchangeData.GetTickers24hAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApiExchangeData.GetTicker24hAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApiExchangeData.GetTickerPricesAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApiExchangeData.GetTickerPriceAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApiExchangeData.GetTickerBooksAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApiExchangeData.GetTickerBookAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApiExchangeData.GetRecentTradesAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.Boolean">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.Decimal">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.NullableDecimal">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.AssetStatus">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.MarketStatus">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.OrderSide">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoAsset">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoAssetArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoMarket">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoMarketArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoPublicTrade">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoPublicTradeArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoServerTime">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoTicker24h">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoTicker24hArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoTickerBook">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoTickerBookArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoTickerPrice">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoTickerPriceArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoSocketRequest">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoSubscriptionChannel">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoSubscriptionChannelArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoSubscriptionResponse">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoTicker24hUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoTradeUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.IDictionaryStringObject">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.DateTime">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.Int32">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.NullableInt32">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.Object">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.String">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.StringArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.Default">
+            <summary>
+            The default <see cref="T:System.Text.Json.Serialization.JsonSerializerContext"/> associated with a default <see cref="T:System.Text.Json.JsonSerializerOptions"/> instance.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.GeneratedSerializerOptions">
+            <summary>
+            The source-generated options associated with this context.
+            </summary>
+        </member>
+        <member name="M:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.#ctor">
+            <inheritdoc/>
+        </member>
+        <member name="M:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.#ctor(System.Text.Json.JsonSerializerOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.GetTypeInfo(System.Type)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Bitvavo.Net.Enums.AssetStatus">
+            <summary>
+            Deposit/withdrawal status for a Bitvavo asset.
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.AssetStatus.Ok">
+            <summary>
+            ["<c>OK</c>"] Deposits/withdrawals are enabled
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.AssetStatus.Maintenance">
+            <summary>
+            ["<c>MAINTENANCE</c>"] Asset network is under maintenance
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.AssetStatus.Delisted">
+            <summary>
+            ["<c>DELISTED</c>"] Asset has been delisted
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Enums.MarketStatus">
+            <summary>
+            Market trading status as returned by the Bitvavo /markets endpoint.
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.MarketStatus.Trading">
+            <summary>
+            ["<c>trading</c>"] Market is trading normally
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.MarketStatus.Halted">
+            <summary>
+            ["<c>halted</c>"] Trading on this market has been halted
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.MarketStatus.Auction">
+            <summary>
+            ["<c>auction</c>"] Market is in auction mode
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Enums.OrderSide">
+            <summary>
+            Order side
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.OrderSide.Buy">
+            <summary>
+            ["<c>buy</c>"] Buy
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.OrderSide.Sell">
+            <summary>
+            ["<c>sell</c>"] Sell
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Interfaces.Clients.ExchangeSocketApi.IBitvavoSocketClientExchangeApi">
+            <summary>
+            Bitvavo Exchange Socket API streams (<c>wss://ws.bitvavo.com/v2/</c>).
+            </summary>
+        </member>
+        <member name="M:Bitvavo.Net.Interfaces.Clients.ExchangeSocketApi.IBitvavoSocketClientExchangeApi.SubscribeToTradeUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitvavo.Net.Objects.Models.Socket.BitvavoTradeUpdate}},System.Threading.CancellationToken)">
+            <summary>
+            Subscribe to the public trade stream for a market.
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitvavo.com/docs/websocket-api/trades-subscription/" /><br />
+            Channel: <c>trades</c>
+            </para>
+            </summary>
+            <param name="market">Market (for example <c>BTC-EUR</c>)</param>
+            <param name="onMessage">Trade event handler</param>
+            <param name="ct">Cancellation token for closing this subscription</param>
+        </member>
+        <member name="M:Bitvavo.Net.Interfaces.Clients.ExchangeSocketApi.IBitvavoSocketClientExchangeApi.SubscribeToTicker24hUpdatesAsync(System.String[],System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitvavo.Net.Objects.Models.Socket.BitvavoTicker24hUpdate}},System.Threading.CancellationToken)">
+            <summary>
+            Subscribe to the rolling 24h ticker stream for one or more markets.
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitvavo.com/docs/websocket-api/ticker-24-hour-subscription/" /><br />
+            Channel: <c>ticker24h</c>
+            </para>
+            </summary>
+            <param name="markets">Markets to subscribe to (for example <c>BTC-EUR</c>)</param>
+            <param name="onMessage">Ticker event handler. The exchange may batch multiple markets into a single update.</param>
+            <param name="ct">Cancellation token for closing this subscription</param>
+        </member>
+        <member name="T:Bitvavo.Net.Interfaces.Clients.IBitvavoRestClient">
+            <summary>
+            Client for accessing the Bitvavo REST API.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Interfaces.Clients.IBitvavoRestClient.SpotApi">
+            <summary>
+            Spot API endpoints
+            </summary>
+            <see cref="T:Bitvavo.Net.Interfaces.Clients.SpotApi.IBitvavoRestClientSpotApi"/>
+        </member>
+        <member name="T:Bitvavo.Net.Interfaces.Clients.IBitvavoSocketClient">
+            <summary>
+            Client for accessing the Bitvavo websocket APIs.
+            <para>
+            Bitvavo offers two distinct websocket APIs - the regular Exchange Socket API and the
+            low-latency Market Data Pro Socket API - exposed via <see cref="P:Bitvavo.Net.Interfaces.Clients.IBitvavoSocketClient.ExchangeApi"/> and
+            <see cref="P:Bitvavo.Net.Interfaces.Clients.IBitvavoSocketClient.MarketDataProApi"/>.
+            </para>
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Interfaces.Clients.IBitvavoSocketClient.ExchangeApi">
+            <summary>
+            Exchange Socket API streams (<c>wss://ws.bitvavo.com/v2/</c>)
+            </summary>
+            <see cref="T:Bitvavo.Net.Interfaces.Clients.ExchangeSocketApi.IBitvavoSocketClientExchangeApi"/>
+        </member>
+        <member name="P:Bitvavo.Net.Interfaces.Clients.IBitvavoSocketClient.MarketDataProApi">
+            <summary>
+            Market Data Pro Socket API streams (<c>wss://ws-mdpro.bitvavo.com/v2/</c>)
+            </summary>
+            <see cref="T:Bitvavo.Net.Interfaces.Clients.MarketDataProSocketApi.IBitvavoSocketClientMarketDataProApi"/>
+        </member>
+        <member name="T:Bitvavo.Net.Interfaces.Clients.IBitvavoUserClientProvider">
+            <summary>
+            Provider for clients with credentials for specific users
+            </summary>
+        </member>
+        <member name="M:Bitvavo.Net.Interfaces.Clients.IBitvavoUserClientProvider.InitializeUserClient(System.String,Bitvavo.Net.BitvavoCredentials,Bitvavo.Net.BitvavoEnvironment)">
+            <summary>
+            Initialize a client for the specified user identifier. This can be used so to initialize a client for a user so ApiCredentials do not need to be passed later.
+            </summary>
+            <param name="userIdentifier">The identifier for the user</param>
+            <param name="credentials">The credentials for the user</param>
+            <param name="environment">The environment to use</param>
+        </member>
+        <member name="M:Bitvavo.Net.Interfaces.Clients.IBitvavoUserClientProvider.ClearUserClients(System.String)">
+            <summary>
+            Reset the cached clients for a user. This can be useful when a user changes API credentials.
+            </summary>
+        </member>
+        <member name="M:Bitvavo.Net.Interfaces.Clients.IBitvavoUserClientProvider.GetRestClient(System.String,Bitvavo.Net.BitvavoCredentials,Bitvavo.Net.BitvavoEnvironment)">
+            <summary>
+            Get the Rest client for a specific user. In case the client does not exist yet it will be created and the <paramref name="credentials"/> should be provided, unless <see cref="M:Bitvavo.Net.Interfaces.Clients.IBitvavoUserClientProvider.InitializeUserClient(System.String,Bitvavo.Net.BitvavoCredentials,Bitvavo.Net.BitvavoEnvironment)" /> has been called prior for this user.
+            </summary>
+            <param name="userIdentifier">The identifier for user</param>
+            <param name="credentials">The credentials for the user. Required the first time a client is requested for this user unless <see cref="M:Bitvavo.Net.Interfaces.Clients.IBitvavoUserClientProvider.InitializeUserClient(System.String,Bitvavo.Net.BitvavoCredentials,Bitvavo.Net.BitvavoEnvironment)" /> has been called prior for this user.</param>
+            <param name="environment">The environment to use</param>
+        </member>
+        <member name="M:Bitvavo.Net.Interfaces.Clients.IBitvavoUserClientProvider.GetSocketClient(System.String,Bitvavo.Net.BitvavoCredentials,Bitvavo.Net.BitvavoEnvironment)">
+            <summary>
+            Get the Socket client for a specific user. In case the client does not exist yet it will be created and the <paramref name="credentials"/> should be provided, unless <see cref="M:Bitvavo.Net.Interfaces.Clients.IBitvavoUserClientProvider.InitializeUserClient(System.String,Bitvavo.Net.BitvavoCredentials,Bitvavo.Net.BitvavoEnvironment)" /> has been called prior for this user.
+            </summary>
+            <param name="userIdentifier">The identifier for user</param>
+            <param name="credentials">The credentials for the user. Required the first time a client is requested for this user unless <see cref="M:Bitvavo.Net.Interfaces.Clients.IBitvavoUserClientProvider.InitializeUserClient(System.String,Bitvavo.Net.BitvavoCredentials,Bitvavo.Net.BitvavoEnvironment)" /> has been called prior for this user.</param>
+            <param name="environment">The environment to use</param>
+        </member>
+        <member name="T:Bitvavo.Net.Interfaces.Clients.MarketDataProSocketApi.IBitvavoSocketClientMarketDataProApi">
+            <summary>
+            Bitvavo Market Data Pro Socket API streams (<c>wss://ws-mdpro.bitvavo.com/v2/</c>).
+            <para>
+            Provides low-latency, full-fidelity market data with sequence-numbered events.
+            </para>
+            </summary>
+        </member>
+        <member name="M:Bitvavo.Net.Interfaces.Clients.MarketDataProSocketApi.IBitvavoSocketClientMarketDataProApi.SubscribeToTradeUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitvavo.Net.Objects.Models.Socket.BitvavoTradeUpdate}},System.Threading.CancellationToken)">
+            <summary>
+            Subscribe to the public trade stream for a market via Market Data Pro.
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitvavo.com/docs/ws-market-data-pro-api/trades-subscription/" /><br />
+            Channel: <c>trades</c>
+            </para>
+            </summary>
+            <param name="market">Market (for example <c>BTC-EUR</c>)</param>
+            <param name="onMessage">Trade event handler</param>
+            <param name="ct">Cancellation token for closing this subscription</param>
+        </member>
+        <member name="T:Bitvavo.Net.Interfaces.Clients.SpotApi.IBitvavoRestClientSpotApi">
+            <summary>
+            Bitvavo Spot API endpoints
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Interfaces.Clients.SpotApi.IBitvavoRestClientSpotApi.ExchangeData">
+            <summary>
+            Endpoints related to retrieving market and system data
+            </summary>
+            <see cref="T:Bitvavo.Net.Interfaces.Clients.SpotApi.IBitvavoRestClientSpotApiExchangeData" />
+        </member>
+        <member name="T:Bitvavo.Net.Interfaces.Clients.SpotApi.IBitvavoRestClientSpotApiExchangeData">
+            <summary>
+            Bitvavo Spot exchange data endpoints. Exchange data includes market data
+            (tickers, order books, etc.) and system status.
+            </summary>
+        </member>
+        <member name="M:Bitvavo.Net.Interfaces.Clients.SpotApi.IBitvavoRestClientSpotApiExchangeData.GetServerTimeAsync(System.Threading.CancellationToken)">
+            <summary>
+            Get the current Bitvavo server time.
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitvavo.com/docs/rest-api/get-server-time/" /><br />
+            Endpoint:<br />
+            GET /v2/time
+            </para>
+            </summary>
+            <param name="ct">Cancellation token</param>
+        </member>
+        <member name="M:Bitvavo.Net.Interfaces.Clients.SpotApi.IBitvavoRestClientSpotApiExchangeData.GetMarketsAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Get all trading markets, including their status, base/quote and trade limits.
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitvavo.com/docs/rest-api/get-markets/" /><br />
+            Endpoint:<br />
+            GET /v2/markets
+            </para>
+            </summary>
+            <param name="market">["<c>market</c>"] Optional market filter (for example <c>BTC-EUR</c>)</param>
+            <param name="ct">Cancellation token</param>
+        </member>
+        <member name="M:Bitvavo.Net.Interfaces.Clients.SpotApi.IBitvavoRestClientSpotApiExchangeData.GetAssetsAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Get all assets known to the exchange, including supported networks.
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitvavo.com/docs/rest-api/get-asset-data/" /><br />
+            Endpoint:<br />
+            GET /v2/assets
+            </para>
+            </summary>
+            <param name="symbol">["<c>symbol</c>"] Optional asset filter (for example <c>BTC</c>)</param>
+            <param name="ct">Cancellation token</param>
+        </member>
+        <member name="M:Bitvavo.Net.Interfaces.Clients.SpotApi.IBitvavoRestClientSpotApiExchangeData.GetTickers24hAsync(System.Threading.CancellationToken)">
+            <summary>
+            Get rolling 24h ticker statistics for ALL markets.
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitvavo.com/docs/rest-api/get-candlestick-data-24-h/" /><br />
+            Endpoint:<br />
+            GET /v2/ticker/24h
+            </para>
+            </summary>
+            <param name="ct">Cancellation token</param>
+        </member>
+        <member name="M:Bitvavo.Net.Interfaces.Clients.SpotApi.IBitvavoRestClientSpotApiExchangeData.GetTicker24hAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Get rolling 24h ticker statistics for a single market. Bitvavo returns a SINGLE object
+            (not an array of one) when the <c>market</c> query parameter is supplied.
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitvavo.com/docs/rest-api/get-candlestick-data-24-h/" /><br />
+            Endpoint:<br />
+            GET /v2/ticker/24h?market={market}
+            </para>
+            </summary>
+            <param name="market">["<c>market</c>"] Market (for example <c>BTC-EUR</c>)</param>
+            <param name="ct">Cancellation token</param>
+        </member>
+        <member name="M:Bitvavo.Net.Interfaces.Clients.SpotApi.IBitvavoRestClientSpotApiExchangeData.GetTickerPricesAsync(System.Threading.CancellationToken)">
+            <summary>
+            Get the latest price for ALL markets.
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitvavo.com/docs/rest-api/get-ticker-prices/" /><br />
+            Endpoint:<br />
+            GET /v2/ticker/price
+            </para>
+            </summary>
+            <param name="ct">Cancellation token</param>
+        </member>
+        <member name="M:Bitvavo.Net.Interfaces.Clients.SpotApi.IBitvavoRestClientSpotApiExchangeData.GetTickerPriceAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Get the latest price for a single market. Bitvavo returns a SINGLE object
+            (not an array of one) when the <c>market</c> query parameter is supplied.
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitvavo.com/docs/rest-api/get-ticker-prices/" /><br />
+            Endpoint:<br />
+            GET /v2/ticker/price?market={market}
+            </para>
+            </summary>
+            <param name="market">["<c>market</c>"] Market (for example <c>BTC-EUR</c>)</param>
+            <param name="ct">Cancellation token</param>
+        </member>
+        <member name="M:Bitvavo.Net.Interfaces.Clients.SpotApi.IBitvavoRestClientSpotApiExchangeData.GetTickerBooksAsync(System.Threading.CancellationToken)">
+            <summary>
+            Get the best bid/ask snapshot for ALL markets.
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitvavo.com/docs/rest-api/get-ticker-book/" /><br />
+            Endpoint:<br />
+            GET /v2/ticker/book
+            </para>
+            </summary>
+            <param name="ct">Cancellation token</param>
+        </member>
+        <member name="M:Bitvavo.Net.Interfaces.Clients.SpotApi.IBitvavoRestClientSpotApiExchangeData.GetTickerBookAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Get the best bid/ask snapshot for a single market. Bitvavo returns a SINGLE object
+            (not an array of one) when the <c>market</c> query parameter is supplied.
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitvavo.com/docs/rest-api/get-ticker-book/" /><br />
+            Endpoint:<br />
+            GET /v2/ticker/book?market={market}
+            </para>
+            </summary>
+            <param name="market">["<c>market</c>"] Market (for example <c>BTC-EUR</c>)</param>
+            <param name="ct">Cancellation token</param>
+        </member>
+        <member name="M:Bitvavo.Net.Interfaces.Clients.SpotApi.IBitvavoRestClientSpotApiExchangeData.GetRecentTradesAsync(System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Get recent public trades for a market.
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitvavo.com/docs/rest-api/get-trades/" /><br />
+            Endpoint:<br />
+            GET /v2/{market}/trades
+            </para>
+            </summary>
+            <param name="market">["<c>market</c>"] Market (for example <c>BTC-EUR</c>)</param>
+            <param name="limit">["<c>limit</c>"] Max number of results, max 1000</param>
+            <param name="ct">Cancellation token</param>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.BitvavoApiAddresses">
+            <summary>
+            Api addresses usable for the Bitvavo clients
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.BitvavoApiAddresses.RestClientAddress">
+            <summary>
+            The address used by the BitvavoRestClient for the rest API
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.BitvavoApiAddresses.SocketExchangeClientAddress">
+            <summary>
+            The address used by the BitvavoSocketClient for the Exchange Socket API
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.BitvavoApiAddresses.SocketMarketDataProClientAddress">
+            <summary>
+            The address used by the BitvavoSocketClient for the Market Data Pro Socket API
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Objects.BitvavoApiAddresses.Default">
+            <summary>
+            The default addresses to connect to the Bitvavo API
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Models.BitvavoAsset">
+            <summary>
+            Asset info as returned by Bitvavo GET /v2/assets
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoAsset.Symbol">
+            <summary>
+            ["<c>symbol</c>"] Asset short name (for example <c>BTC</c>)
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoAsset.Name">
+            <summary>
+            ["<c>name</c>"] Display name (for example <c>Bitcoin</c>)
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoAsset.Decimals">
+            <summary>
+            ["<c>decimals</c>"] Number of decimals supported for this asset
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoAsset.DepositFee">
+            <summary>
+            ["<c>depositFee</c>"] Deposit fee
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoAsset.DepositConfirmations">
+            <summary>
+            ["<c>depositConfirmations</c>"] Confirmations required for a deposit to be credited
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoAsset.DepositStatus">
+            <summary>
+            ["<c>depositStatus</c>"] Current deposit status of the asset
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoAsset.WithdrawalFee">
+            <summary>
+            ["<c>withdrawalFee</c>"] Withdrawal fee
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoAsset.WithdrawalMinAmount">
+            <summary>
+            ["<c>withdrawalMinAmount</c>"] Minimum withdrawal amount
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoAsset.WithdrawalStatus">
+            <summary>
+            ["<c>withdrawalStatus</c>"] Current withdrawal status of the asset
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoAsset.Networks">
+            <summary>
+            ["<c>networks</c>"] List of networks the asset is supported on
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoAsset.Message">
+            <summary>
+            ["<c>message</c>"] Optional message regarding the current status of the asset
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Models.BitvavoMarket">
+            <summary>
+            Trading market info as returned by Bitvavo GET /v2/markets
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoMarket.Market">
+            <summary>
+            ["<c>market</c>"] Market name, formatted as <c>BASE-QUOTE</c> (for example <c>BTC-EUR</c>)
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoMarket.Status">
+            <summary>
+            ["<c>status</c>"] Market trading status
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoMarket.BaseAsset">
+            <summary>
+            ["<c>base</c>"] Base asset symbol
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoMarket.QuoteAsset">
+            <summary>
+            ["<c>quote</c>"] Quote asset symbol
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoMarket.PricePrecision">
+            <summary>
+            ["<c>pricePrecision</c>"] Number of significant digits used for the price.
+            May return <c>null</c> after the migration to tick-size validation.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoMarket.MinOrderInBaseAsset">
+            <summary>
+            ["<c>minOrderInBaseAsset</c>"] Minimum order quantity expressed in the base asset
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoMarket.MinOrderInQuoteAsset">
+            <summary>
+            ["<c>minOrderInQuoteAsset</c>"] Minimum order value expressed in the quote asset
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoMarket.OrderTypes">
+            <summary>
+            ["<c>orderTypes</c>"] Supported order types for this market
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Models.BitvavoPublicTrade">
+            <summary>
+            Public trade entry as returned by Bitvavo GET /v2/{market}/trades
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoPublicTrade.Id">
+            <summary>
+            ["<c>id</c>"] Trade id
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoPublicTrade.Timestamp">
+            <summary>
+            ["<c>timestamp</c>"] Trade timestamp
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoPublicTrade.Amount">
+            <summary>
+            ["<c>amount</c>"] Trade quantity in base asset
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoPublicTrade.Price">
+            <summary>
+            ["<c>price</c>"] Trade price
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoPublicTrade.Side">
+            <summary>
+            ["<c>side</c>"] Aggressor side (the side of the taker order)
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Models.BitvavoServerTime">
+            <summary>
+            Server time response (Bitvavo GET /v2/time)
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoServerTime.Time">
+            <summary>
+            ["<c>time</c>"] Current server timestamp
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Models.BitvavoTicker24h">
+            <summary>
+            24h rolling ticker statistics as returned by Bitvavo GET /v2/ticker/24h
+            and the websocket <c>ticker24h</c> channel.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTicker24h.Market">
+            <summary>
+            ["<c>market</c>"] Market name (for example <c>BTC-EUR</c>)
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTicker24h.Open">
+            <summary>
+            ["<c>open</c>"] Open price for the rolling 24h window
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTicker24h.High">
+            <summary>
+            ["<c>high</c>"] High price for the rolling 24h window
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTicker24h.Low">
+            <summary>
+            ["<c>low</c>"] Low price for the rolling 24h window
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTicker24h.Last">
+            <summary>
+            ["<c>last</c>"] Last trade price
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTicker24h.Volume">
+            <summary>
+            ["<c>volume</c>"] Volume in base asset over the rolling 24h window
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTicker24h.VolumeQuote">
+            <summary>
+            ["<c>volumeQuote</c>"] Volume in quote asset over the rolling 24h window
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTicker24h.Bid">
+            <summary>
+            ["<c>bid</c>"] Best bid price
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTicker24h.BidSize">
+            <summary>
+            ["<c>bidSize</c>"] Best bid size
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTicker24h.Ask">
+            <summary>
+            ["<c>ask</c>"] Best ask price
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTicker24h.AskSize">
+            <summary>
+            ["<c>askSize</c>"] Best ask size
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTicker24h.Timestamp">
+            <summary>
+            ["<c>timestamp</c>"] Timestamp of the snapshot
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Models.BitvavoTickerBook">
+            <summary>
+            Best bid/ask snapshot as returned by Bitvavo GET /v2/ticker/book
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTickerBook.Market">
+            <summary>
+            ["<c>market</c>"] Market name (for example <c>BTC-EUR</c>)
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTickerBook.Bid">
+            <summary>
+            ["<c>bid</c>"] Best bid price
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTickerBook.BidSize">
+            <summary>
+            ["<c>bidSize</c>"] Size at the best bid
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTickerBook.Ask">
+            <summary>
+            ["<c>ask</c>"] Best ask price
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTickerBook.AskSize">
+            <summary>
+            ["<c>askSize</c>"] Size at the best ask
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Models.BitvavoTickerPrice">
+            <summary>
+            Last price for a market as returned by Bitvavo GET /v2/ticker/price
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTickerPrice.Market">
+            <summary>
+            ["<c>market</c>"] Market name (for example <c>BTC-EUR</c>)
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTickerPrice.Price">
+            <summary>
+            ["<c>price</c>"] Last trade price
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Models.Socket.BitvavoSocketRequest">
+            <summary>
+            Subscribe/unsubscribe request payload for the Bitvavo websocket APIs.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoSocketRequest.Action">
+            <summary>
+            ["<c>action</c>"] Action name, either <c>subscribe</c> or <c>unsubscribe</c>.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoSocketRequest.Channels">
+            <summary>
+            ["<c>channels</c>"] Channels to subscribe or unsubscribe from.
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Models.Socket.BitvavoSubscriptionChannel">
+            <summary>
+            Single channel inside a Bitvavo subscribe/unsubscribe request.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoSubscriptionChannel.Name">
+            <summary>
+            ["<c>name</c>"] Channel name (for example <c>trades</c>, <c>ticker24h</c>, <c>book</c>).
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoSubscriptionChannel.Markets">
+            <summary>
+            ["<c>markets</c>"] Markets to subscribe to (for example <c>BTC-EUR</c>).
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Models.Socket.BitvavoSubscriptionResponse">
+            <summary>
+            Response payload returned by the Bitvavo websocket server to a subscribe/unsubscribe request.
+            <para>
+            Bitvavo replies with one of two shapes:<br />
+            1) Success:   <c>{"event":"subscribed","subscriptions":{"trades":["BTC-EUR"]}}</c>  (or <c>"unsubscribed"</c> for an unsubscribe).<br />
+            2) Failure:   <c>{"action":"subscribe","errorCode":205,"error":"market parameter UNK-NOWN is invalid."}</c>.<br />
+            Both shapes are deserialized into this single record so the originating <see cref="T:Bitvavo.Net.Objects.Sockets.BitvavoQuery"/>
+            can decide whether the request succeeded.
+            </para>
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoSubscriptionResponse.Event">
+            <summary>
+            ["<c>event</c>"] Set to <c>subscribed</c> or <c>unsubscribed</c> on success, absent on errors.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoSubscriptionResponse.Action">
+            <summary>
+            ["<c>action</c>"] Set to <c>subscribe</c> or <c>unsubscribe</c> on action-scoped errors, absent on success.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoSubscriptionResponse.ErrorCode">
+            <summary>
+            ["<c>errorCode</c>"] Numeric error code (only present on failure).
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoSubscriptionResponse.Error">
+            <summary>
+            ["<c>error</c>"] Human readable error message (only present on failure).
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Models.Socket.BitvavoTicker24hUpdate">
+            <summary>
+            24h ticker update envelope from the Bitvavo <c>ticker24h</c> websocket subscription.
+            The exchange batches updates for one or more markets in <see cref="P:Bitvavo.Net.Objects.Models.Socket.BitvavoTicker24hUpdate.Data"/>.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoTicker24hUpdate.Event">
+            <summary>
+            ["<c>event</c>"] Event identifier, always <c>ticker24h</c>
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoTicker24hUpdate.Data">
+            <summary>
+            ["<c>data</c>"] One or more <see cref="T:Bitvavo.Net.Objects.Models.BitvavoTicker24h"/> entries, one per affected market
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Models.Socket.BitvavoTradeUpdate">
+            <summary>
+            Trade update message received from the Bitvavo <c>trades</c> websocket subscription.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoTradeUpdate.Event">
+            <summary>
+            ["<c>event</c>"] Event identifier, always <c>trade</c>
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoTradeUpdate.Market">
+            <summary>
+            ["<c>market</c>"] Market name (for example <c>BTC-EUR</c>)
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoTradeUpdate.Id">
+            <summary>
+            ["<c>id</c>"] Trade id
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoTradeUpdate.Timestamp">
+            <summary>
+            ["<c>timestamp</c>"] Trade timestamp
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoTradeUpdate.Amount">
+            <summary>
+            ["<c>amount</c>"] Trade quantity in base asset
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoTradeUpdate.Price">
+            <summary>
+            ["<c>price</c>"] Trade price
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.Socket.BitvavoTradeUpdate.Side">
+            <summary>
+            ["<c>side</c>"] Aggressor side (taker side)
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Options.BitvavoOptions">
+            <summary>
+            Bitvavo options
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Options.BitvavoRestOptions">
+            <summary>
+            Options for the BitvavoRestClient
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Options.BitvavoRestOptions.Default">
+            <summary>
+            Default options for the BitvavoRestClient
+            </summary>
+        </member>
+        <member name="M:Bitvavo.Net.Objects.Options.BitvavoRestOptions.#ctor">
+            <summary>
+            ctor
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Options.BitvavoRestOptions.ApiOptions">
+            <summary>
+            Options for the Exchange API
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Options.BitvavoSocketOptions">
+            <summary>
+            Options for the BitvavoSocketClient.
+            <para>
+            Bitvavo exposes two distinct websocket APIs - the regular Exchange Socket API and the
+            low-latency Market Data Pro Socket API. The same socket client connects to both via
+            independent api-clients, configured through <see cref="P:Bitvavo.Net.Objects.Options.BitvavoSocketOptions.ExchangeOptions"/> and
+            <see cref="P:Bitvavo.Net.Objects.Options.BitvavoSocketOptions.MarketDataProOptions"/>.
+            </para>
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Options.BitvavoSocketOptions.Default">
+            <summary>
+            Default options for the BitvavoSocketClient
+            </summary>
+        </member>
+        <member name="M:Bitvavo.Net.Objects.Options.BitvavoSocketOptions.#ctor">
+            <summary>
+            ctor
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Options.BitvavoSocketOptions.ExchangeOptions">
+            <summary>
+            Options for the Exchange Socket API (<c>wss://ws.bitvavo.com/v2/</c>)
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Options.BitvavoSocketOptions.MarketDataProOptions">
+            <summary>
+            Options for the Market Data Pro Socket API (<c>wss://ws-mdpro.bitvavo.com/v2/</c>)
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Sockets.BitvavoQuery">
+            <summary>
+            Subscribe/unsubscribe query for the Bitvavo websocket API.
+            <para>
+            Bitvavo replies to a subscribe/unsubscribe with either:
+            <list type="bullet">
+            <item>a success event - <c>{"event":"subscribed",...}</c> or <c>{"event":"unsubscribed",...}</c>; or</item>
+            <item>an action-scoped error - <c>{"action":"subscribe","errorCode":...,"error":"..."}</c>.</item>
+            </list>
+            We route both shapes into <see cref="T:Bitvavo.Net.Objects.Models.Socket.BitvavoSubscriptionResponse"/> via the <c>subscribed</c>/<c>unsubscribed</c>/<c>subscribe</c>/<c>unsubscribe</c>
+            type identifiers so the query consumes them silently and surfaces a <see cref="T:CryptoExchange.Net.Objects.ServerError"/> when an error code is returned.
+            </para>
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Sockets.BitvavoTicker24hSubscription">
+            <summary>
+            Subscription for the Bitvavo <c>ticker24h</c> websocket channel covering one or more markets.
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Sockets.BitvavoTradeSubscription">
+            <summary>
+            Subscription for the Bitvavo public <c>trades</c> websocket channel.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions">
+            <summary>
+            Extensions for DI
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions.AddBitvavo(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Add services such as the IBitvavoRestClient and IBitvavoSocketClient. Configures the services based on the provided configuration.
+            </summary>
+            <param name="services">The service collection</param>
+            <param name="configuration">The configuration(section) containing the options</param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions.AddBitvavo(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Bitvavo.Net.Objects.Options.BitvavoOptions})">
+            <summary>
+            Add services such as the IBitvavoRestClient and IBitvavoSocketClient. Services will be configured based on the provided options.
+            </summary>
+            <param name="services">The service collection</param>
+            <param name="optionsDelegate">Set options for the Bitvavo services</param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Extensions.Configuration.Binder.SourceGeneration.BindingExtensions.Bind_BitvavoOptions(Microsoft.Extensions.Configuration.IConfiguration,System.Object)">
+            <summary>Attempts to bind the given object instance to configuration values by matching property names against configuration keys recursively.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.Configuration.Binder.SourceGeneration.BindingExtensions.TryGetConfigurationValue(Microsoft.Extensions.Configuration.IConfiguration,System.String,System.String@)">
+            <summary>Tries to get the configuration value for the specified key.</summary>
+        </member>
+        <member name="M:Microsoft.Extensions.Configuration.Binder.SourceGeneration.BindingExtensions.ValidateConfigurationKeys(System.Type,System.Lazy{System.Collections.Generic.HashSet{System.String}},Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Configuration.BinderOptions)">
+            <summary>If required by the binder options, validates that there are no unknown keys in the input configuration object.</summary>
+        </member>
+    </members>
+</doc>
