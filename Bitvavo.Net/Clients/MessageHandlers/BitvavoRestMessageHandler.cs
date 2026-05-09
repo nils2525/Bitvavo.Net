@@ -9,6 +9,9 @@ namespace Bitvavo.Net.Clients.MessageHandlers
 {
     internal class BitvavoRestMessageHandler : JsonRestMessageHandler
     {
+        // Bitvavo response headers documented at https://docs.bitvavo.com/docs/rate-limits/
+        private const string HeaderRateLimitResetAt = "bitvavo-ratelimit-resetat";
+
         private readonly ErrorMapping _errorMapping;
         public override bool RequiresSeekableStream => true;
         public override JsonSerializerOptions Options { get; } = SerializerOptions.WithConverters(BitvavoExchange._serializerContext);
@@ -39,6 +42,30 @@ namespace Bitvavo.Net.Clients.MessageHandlers
             return ParseErrorInternal(document!.RootElement);
         }
 
+        /// <summary>
+        /// Bitvavo's rate-limit response carries the docs-published <c>bitvavo-ratelimit-resetat</c>
+        /// header (epoch ms). Surface it as the rate-limit error's retry-after so the framework's
+        /// <c>RateLimitGate</c> blocks subsequent calls until the server's reset moment instead of
+        /// bursting into more 429s. Source: <see href="https://docs.bitvavo.com/docs/rate-limits/" />.
+        /// </summary>
+        public override async ValueTask<ServerRateLimitError> ParseErrorRateLimitResponse(int httpStatusCode, HttpResponseHeaders responseHeaders, Stream responseStream)
+        {
+            // First try the Bitvavo-specific header.
+            if (TryReadResetAt(responseHeaders, out var resetAt))
+            {
+                // Carry the parsed errorCode/message into the error so the wrapper-side mapper
+                // logs `[105] market parameter ... is invalid.` instead of the empty fallback.
+                var (_, document) = await GetJsonDocument(responseStream).ConfigureAwait(false);
+                var message = document?.RootElement.ValueKind == JsonValueKind.Object && document.RootElement.TryGetProperty("error", out var errorProp)
+                    ? errorProp.GetString()
+                    : null;
+                return new ServerRateLimitError(message) { RetryAfter = resetAt };
+            }
+
+            // Fall back to the framework's `Retry-After` handling.
+            return await base.ParseErrorRateLimitResponse(httpStatusCode, responseHeaders, responseStream).ConfigureAwait(false);
+        }
+
         public override async ValueTask<Error?> CheckForErrorResponse(RequestDefinition request, HttpResponseHeaders responseHeaders, Stream responseStream)
         {
             var (parseError, document) = await GetJsonDocument(responseStream).ConfigureAwait(false);
@@ -53,6 +80,21 @@ namespace Bitvavo.Net.Clients.MessageHandlers
                 return ParseErrorInternal(document.RootElement);
 
             return await base.CheckForErrorResponse(request, responseHeaders, responseStream).ConfigureAwait(false);
+        }
+
+        private static bool TryReadResetAt(HttpResponseHeaders responseHeaders, out DateTime resetAt)
+        {
+            resetAt = default;
+            var header = responseHeaders.FirstOrDefault(h => h.Key.Equals(HeaderRateLimitResetAt, StringComparison.OrdinalIgnoreCase));
+            if (header.Value == null)
+                return false;
+
+            var value = header.Value.FirstOrDefault();
+            if (value == null || !long.TryParse(value, out var epochMs))
+                return false;
+
+            resetAt = DateTimeOffset.FromUnixTimeMilliseconds(epochMs).UtcDateTime;
+            return true;
         }
     }
 }

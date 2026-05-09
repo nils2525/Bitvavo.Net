@@ -37,6 +37,9 @@ namespace Bitvavo.Net.Converters
     [JsonSerializable(typeof(BitvavoOrderBook))]
     [JsonSerializable(typeof(BitvavoOrderBookEntry))]
     [JsonSerializable(typeof(BitvavoOrderBookEntry[]))]
+    [JsonSerializable(typeof(BitvavoTransaction))]
+    [JsonSerializable(typeof(BitvavoTransaction[]))]
+    [JsonSerializable(typeof(BitvavoTransactionHistory))]
 
     [JsonSerializable(typeof(BitvavoTradeUpdate))]
     [JsonSerializable(typeof(BitvavoTicker24hUpdate))]

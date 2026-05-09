@@ -317,6 +317,14 @@
         <member name="M:Bitvavo.Net.Clients.MarketDataProSocketApi.BitvavoSocketClientMarketDataProApi.SubscribeToTradeUpdatesAsync(System.String,System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Bitvavo.Net.Objects.Models.Socket.BitvavoTradeUpdate}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
+        <member name="M:Bitvavo.Net.Clients.MessageHandlers.BitvavoRestMessageHandler.ParseErrorRateLimitResponse(System.Int32,System.Net.Http.Headers.HttpResponseHeaders,System.IO.Stream)">
+            <summary>
+            Bitvavo's rate-limit response carries the docs-published <c>bitvavo-ratelimit-resetat</c>
+            header (epoch ms). Surface it as the rate-limit error's retry-after so the framework's
+            <c>RateLimitGate</c> blocks subsequent calls until the server's reset moment instead of
+            bursting into more 429s. Source: <see href="https://docs.bitvavo.com/docs/rate-limits/" />.
+            </summary>
+        </member>
         <member name="T:Bitvavo.Net.Clients.MessageHandlers.BitvavoSocketMessageHandler">
             <summary>
             Routes incoming websocket messages to the right query/subscription. Subscribe/unsubscribe
@@ -358,6 +366,9 @@
             <inheritdoc />
         </member>
         <member name="M:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApiAccount.GetWithdrawalHistoryAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApiAccount.GetTransactionHistoryAsync(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{Bitvavo.Net.Enums.BitvavoTransactionType},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:Bitvavo.Net.Clients.SpotApi.BitvavoRestClientSpotApiAccount.WithdrawAsync(System.String,System.Decimal,System.String,System.String,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
@@ -461,6 +472,11 @@
             </summary>
         </member>
         <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.AssetStatus">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoTransactionType">
             <summary>
             Defines the source generated JSON serialization contract metadata for a given type.
             </summary>
@@ -645,6 +661,21 @@
             Defines the source generated JSON serialization contract metadata for a given type.
             </summary>
         </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoTransaction">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoTransactionArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoTransactionHistory">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
         <member name="P:Bitvavo.Net.Converters.BitvavoSourceGenerationContext.BitvavoUserTrade">
             <summary>
             Defines the source generated JSON serialization contract metadata for a given type.
@@ -807,6 +838,82 @@
         <member name="F:Bitvavo.Net.Enums.AssetStatus.Delisted">
             <summary>
             ["<c>DELISTED</c>"] Asset has been delisted
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Enums.BitvavoTransactionType">
+            <summary>
+            Transaction type as returned by Bitvavo GET /v2/account/history.
+            <see href="https://docs.bitvavo.com/docs/rest-api/get-transaction-history/" />.
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.BitvavoTransactionType.Sell">
+            <summary>
+            ["<c>sell</c>"] Sell trade (sent base, received quote).
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.BitvavoTransactionType.Buy">
+            <summary>
+            ["<c>buy</c>"] Buy trade (sent quote, received base).
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.BitvavoTransactionType.Staking">
+            <summary>
+            ["<c>staking</c>"] Staking reward / payout.
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.BitvavoTransactionType.FixedStaking">
+            <summary>
+            ["<c>fixed_staking</c>"] Fixed-term staking reward / payout.
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.BitvavoTransactionType.Deposit">
+            <summary>
+            ["<c>deposit</c>"] Deposit (fiat or digital).
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.BitvavoTransactionType.Withdrawal">
+            <summary>
+            ["<c>withdrawal</c>"] Withdrawal (fiat or digital).
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.BitvavoTransactionType.Affiliate">
+            <summary>
+            ["<c>affiliate</c>"] Affiliate program payout.
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.BitvavoTransactionType.Distribution">
+            <summary>
+            ["<c>distribution</c>"] Asset distribution (e.g. airdrop, hard fork).
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.BitvavoTransactionType.InternalTransfer">
+            <summary>
+            ["<c>internal_transfer</c>"] Internal transfer between Bitvavo accounts.
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.BitvavoTransactionType.WithdrawalCancelled">
+            <summary>
+            ["<c>withdrawal_cancelled</c>"] Withdrawal cancelled (refund of a previously initiated withdrawal).
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.BitvavoTransactionType.Rebate">
+            <summary>
+            ["<c>rebate</c>"] Fee rebate.
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.BitvavoTransactionType.Loan">
+            <summary>
+            ["<c>loan</c>"] Loan-related transaction.
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.BitvavoTransactionType.ExternalTransferredFunds">
+            <summary>
+            ["<c>external_transferred_funds</c>"] Funds transferred from an external source.
+            </summary>
+        </member>
+        <member name="F:Bitvavo.Net.Enums.BitvavoTransactionType.ManuallyAssigned">
+            <summary>
+            ["<c>manually_assigned</c>"] Manually assigned by Bitvavo (support adjustment).
             </summary>
         </member>
         <member name="T:Bitvavo.Net.Enums.DepositStatus">
@@ -1253,6 +1360,25 @@
             <param name="limit">["<c>limit</c>"] Max results (1-1000, default 500)</param>
             <param name="startTime">["<c>start</c>"] Earliest timestamp</param>
             <param name="endTime">["<c>end</c>"] Latest timestamp</param>
+            <param name="ct">Cancellation token</param>
+        </member>
+        <member name="M:Bitvavo.Net.Interfaces.Clients.SpotApi.IBitvavoRestClientSpotApiAccount.GetTransactionHistoryAsync(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{Bitvavo.Net.Enums.BitvavoTransactionType},System.Threading.CancellationToken)">
+            <summary>
+            Get a unified, paginated transaction history covering trades, deposits, withdrawals,
+            staking, affiliate, distribution and other categories. Bitvavo returns one envelope
+            per page, ordered newest-first.
+            <para>
+            Docs:<br />
+            <a href="https://docs.bitvavo.com/docs/rest-api/get-transaction-history/" /><br />
+            Endpoint:<br />
+            GET /v2/account/history
+            </para>
+            </summary>
+            <param name="fromDate">["<c>fromDate</c>"] Earliest timestamp (inclusive)</param>
+            <param name="toDate">["<c>toDate</c>"] Latest timestamp (inclusive)</param>
+            <param name="page">["<c>page</c>"] 1-based page number</param>
+            <param name="maxItems">["<c>maxItems</c>"] Items per page (1-100)</param>
+            <param name="type">["<c>type</c>"] Optional transaction-type filter</param>
             <param name="ct">Cancellation token</param>
         </member>
         <member name="M:Bitvavo.Net.Interfaces.Clients.SpotApi.IBitvavoRestClientSpotApiAccount.WithdrawAsync(System.String,System.Decimal,System.String,System.String,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
@@ -2228,6 +2354,102 @@
         <member name="P:Bitvavo.Net.Objects.Models.BitvavoTickerPrice.Price">
             <summary>
             ["<c>price</c>"] Last trade price
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Models.BitvavoTransaction">
+            <summary>
+            Single entry from Bitvavo GET /v2/account/history. The set of populated currency / amount
+            pairs varies by <see cref="P:Bitvavo.Net.Objects.Models.BitvavoTransaction.Type"/>: trade entries (<c>buy</c>, <c>sell</c>) populate price/sent/received/fee;
+            deposit / withdrawal entries omit the price + sent fields. Address is masked for fiat
+            (e.g. <c>DE32***31</c>) and may be null for trades.
+            <see href="https://docs.bitvavo.com/docs/rest-api/get-transaction-history/" />.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTransaction.TransactionId">
+            <summary>
+            ["<c>transactionId</c>"] Bitvavo-internal transaction id (UUID).
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTransaction.ExecutedAt">
+            <summary>
+            ["<c>executedAt</c>"] ISO-8601 UTC timestamp when the transaction was executed.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTransaction.Type">
+            <summary>
+            ["<c>type</c>"] Transaction type (trade direction or transfer category).
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTransaction.PriceCurrency">
+            <summary>
+            ["<c>priceCurrency</c>"] Quote currency for trade entries; absent for deposit/withdrawal.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTransaction.PriceAmount">
+            <summary>
+            ["<c>priceAmount</c>"] Unit price expressed in <see cref="P:Bitvavo.Net.Objects.Models.BitvavoTransaction.PriceCurrency"/>; absent for deposit/withdrawal.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTransaction.SentCurrency">
+            <summary>
+            ["<c>sentCurrency</c>"] Currency of the leg sent away from the user; absent for deposit.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTransaction.SentAmount">
+            <summary>
+            ["<c>sentAmount</c>"] Amount sent away from the user; absent for deposit.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTransaction.ReceivedCurrency">
+            <summary>
+            ["<c>receivedCurrency</c>"] Currency of the leg received by the user; absent for withdrawal.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTransaction.ReceivedAmount">
+            <summary>
+            ["<c>receivedAmount</c>"] Amount received by the user; absent for withdrawal.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTransaction.FeesCurrency">
+            <summary>
+            ["<c>feesCurrency</c>"] Currency the fee was charged in.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTransaction.FeesAmount">
+            <summary>
+            ["<c>feesAmount</c>"] Fee amount charged.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTransaction.Address">
+            <summary>
+            ["<c>address</c>"] On-chain address (digital deposit/withdrawal) or masked bank-account
+            reference (fiat deposit/withdrawal); null for trades.
+            </summary>
+        </member>
+        <member name="T:Bitvavo.Net.Objects.Models.BitvavoTransactionHistory">
+            <summary>
+            Page envelope returned by Bitvavo GET /v2/account/history.
+            <see href="https://docs.bitvavo.com/docs/rest-api/get-transaction-history/" />.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTransactionHistory.Items">
+            <summary>
+            ["<c>items</c>"] Transactions on this page (newest first).
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTransactionHistory.CurrentPage">
+            <summary>
+            ["<c>currentPage</c>"] 1-based index of the current page.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTransactionHistory.TotalPages">
+            <summary>
+            ["<c>totalPages</c>"] Total number of pages available for the requested filter.
+            </summary>
+        </member>
+        <member name="P:Bitvavo.Net.Objects.Models.BitvavoTransactionHistory.MaxItems">
+            <summary>
+            ["<c>maxItems</c>"] Maximum items per page (echo of the request parameter, 1..100).
             </summary>
         </member>
         <member name="T:Bitvavo.Net.Objects.Models.BitvavoUserTrade">

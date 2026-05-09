@@ -117,12 +117,15 @@ namespace Bitvavo.Net
 
         private void Initialize()
         {
-            // REST: 1000 weight points / minute. Tracked per API key when authenticated;
-            // when no key is configured the per-key bucket effectively scopes to the process.
+            // REST: 1000 weight points / minute. Bitvavo tracks authenticated requests per API key
+            // (covering both public and private endpoints) and unauthenticated requests per IP
+            // (public endpoints only). Two guards model this exactly: an auth path keyed by API key
+            // and an unauth path keyed by host. Both share the same 1000/min documented budget.
             // Exceeding triggers HTTP 429 with errorCode 105 (1-min lockout for keyed users,
-            // 15-min for IP-based unauthenticated users).
+            // 15-min for IP-based unauthenticated users). Source: https://docs.bitvavo.com/docs/rate-limits/.
             Rest = new RateLimitGate("Rest")
-                .AddGuard(new RateLimitGuard(RateLimitGuard.PerApiKey, new LimitItemTypeFilter(RateLimitItemType.Request), 1000, TimeSpan.FromMinutes(1), RateLimitWindowType.Sliding));
+                .AddGuard(new RateLimitGuard(RateLimitGuard.PerApiKey, new IGuardFilter[] { new LimitItemTypeFilter(RateLimitItemType.Request), new AuthenticatedEndpointFilter(true) }, 1000, TimeSpan.FromMinutes(1), RateLimitWindowType.Sliding))
+                .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, new IGuardFilter[] { new LimitItemTypeFilter(RateLimitItemType.Request), new AuthenticatedEndpointFilter(false) }, 1000, TimeSpan.FromMinutes(1), RateLimitWindowType.Sliding));
 
             // Exchange WebSocket API: 5000 messages / second per session (= per connection).
             // Exceeding triggers HTTP 429 with errorCode 112.

@@ -1,3 +1,4 @@
+using Bitvavo.Net.Enums;
 using Bitvavo.Net.Objects.Models;
 using CryptoExchange.Net.Objects;
 
@@ -64,6 +65,25 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// <param name="endTime">["<c>end</c>"] Latest timestamp</param>
         /// <param name="ct">Cancellation token</param>
         Task<WebCallResult<BitvavoWithdrawal[]>> GetWithdrawalHistoryAsync(string? symbol = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get a unified, paginated transaction history covering trades, deposits, withdrawals,
+        /// staking, affiliate, distribution and other categories. Bitvavo returns one envelope
+        /// per page, ordered newest-first.
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitvavo.com/docs/rest-api/get-transaction-history/" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/account/history
+        /// </para>
+        /// </summary>
+        /// <param name="fromDate">["<c>fromDate</c>"] Earliest timestamp (inclusive)</param>
+        /// <param name="toDate">["<c>toDate</c>"] Latest timestamp (inclusive)</param>
+        /// <param name="page">["<c>page</c>"] 1-based page number</param>
+        /// <param name="maxItems">["<c>maxItems</c>"] Items per page (1-100)</param>
+        /// <param name="type">["<c>type</c>"] Optional transaction-type filter</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<WebCallResult<BitvavoTransactionHistory>> GetTransactionHistoryAsync(DateTime? fromDate = null, DateTime? toDate = null, int? page = null, int? maxItems = null, BitvavoTransactionType? type = null, CancellationToken ct = default);
 
         /// <summary>
         /// Submit a withdrawal request.

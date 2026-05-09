@@ -1,3 +1,4 @@
+using Bitvavo.Net.Enums;
 using Bitvavo.Net.Interfaces.Clients.SpotApi;
 using Bitvavo.Net.Objects.Models;
 using CryptoExchange.Net.Converters.SystemTextJson;
@@ -71,6 +72,24 @@ namespace Bitvavo.Net.Clients.SpotApi
 
             var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/withdrawalHistory", BitvavoExchange.RateLimiter.Rest, 5, true);
             return _baseClient.SendAsync<BitvavoWithdrawal[]>(request, parameters, ct);
+        }
+
+        #endregion
+
+        #region Get Transaction History
+
+        /// <inheritdoc />
+        public Task<WebCallResult<BitvavoTransactionHistory>> GetTransactionHistoryAsync(DateTime? fromDate = null, DateTime? toDate = null, int? page = null, int? maxItems = null, BitvavoTransactionType? type = null, CancellationToken ct = default)
+        {
+            var parameters = new ParameterCollection();
+            parameters.AddOptionalMilliseconds("fromDate", fromDate);
+            parameters.AddOptionalMilliseconds("toDate", toDate);
+            parameters.AddOptional("page", page);
+            parameters.AddOptional("maxItems", maxItems);
+            parameters.AddOptionalEnum("type", type);
+
+            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/account/history", BitvavoExchange.RateLimiter.Rest, 1, true);
+            return _baseClient.SendAsync<BitvavoTransactionHistory>(request, parameters, ct);
         }
 
         #endregion
