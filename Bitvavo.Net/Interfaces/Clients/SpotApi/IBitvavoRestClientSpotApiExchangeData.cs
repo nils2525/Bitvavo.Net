@@ -138,5 +138,20 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// <param name="limit">["<c>limit</c>"] Max number of results, max 1000</param>
         /// <param name="ct">Cancellation token</param>
         Task<WebCallResult<BitvavoPublicTrade[]>> GetRecentTradesAsync(string market, int? limit = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get an order book snapshot for a market. The response includes a <c>nonce</c> that can be
+        /// used to align the snapshot with subsequent <c>book</c> websocket updates.
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.bitvavo.com/docs/rest-api/get-order-book/" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/{market}/book
+        /// </para>
+        /// </summary>
+        /// <param name="market">["<c>market</c>"] Market (for example <c>BTC-EUR</c>)</param>
+        /// <param name="depth">["<c>depth</c>"] Number of bids/asks to return (max 1000, default 1000)</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<WebCallResult<BitvavoOrderBook>> GetOrderBookAsync(string market, int? depth = null, CancellationToken ct = default);
     }
 }

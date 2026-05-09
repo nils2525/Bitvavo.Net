@@ -12,5 +12,17 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <see cref="IBitvavoRestClientSpotApiExchangeData" />
         IBitvavoRestClientSpotApiExchangeData ExchangeData { get; }
+
+        /// <summary>
+        /// Endpoints related to the authenticated account (balances, fees, deposits/withdrawals)
+        /// </summary>
+        /// <see cref="IBitvavoRestClientSpotApiAccount" />
+        IBitvavoRestClientSpotApiAccount Account { get; }
+
+        /// <summary>
+        /// Endpoints related to placing/cancelling orders and reading user trades
+        /// </summary>
+        /// <see cref="IBitvavoRestClientSpotApiTrading" />
+        IBitvavoRestClientSpotApiTrading Trading { get; }
     }
 }

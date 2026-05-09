@@ -19,6 +19,9 @@ namespace Bitvavo.Net.Clients.MessageHandlers
         {
             // Per-market events: routed by event-type and market.
             AddTopicMapping<BitvavoTradeUpdate>(x => x.Market);
+            AddTopicMapping<BitvavoOrderUpdate>(x => x.Market);
+            AddTopicMapping<BitvavoFillUpdate>(x => x.Market);
+            AddTopicMapping<BitvavoOrderBookUpdate>(x => x.Market);
         }
 
         protected override MessageTypeDefinition[] TypeEvaluators { get; } = [

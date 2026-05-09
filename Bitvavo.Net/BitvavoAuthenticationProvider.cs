@@ -4,6 +4,7 @@ using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Sockets;
 
 namespace Bitvavo.Net
 {
@@ -57,6 +58,18 @@ namespace Bitvavo.Net
             requestConfig.Headers["Bitvavo-Access-Timestamp"] = timestamp;
             requestConfig.Headers["Bitvavo-Access-Window"] = "10000";
         }
+
+        /// <summary>
+        /// Compute the HMAC-SHA256 signature for the given input using the configured API secret.
+        /// Used by the websocket <c>authenticate</c> action.
+        /// </summary>
+        internal string Sign(string data) => SignHMACSHA256(data, SignOutputType.Hex);
+
+        /// <summary>
+        /// Get the current millisecond timestamp string used in signatures, accounting for the
+        /// configured time offset of the supplied socket client.
+        /// </summary>
+        internal string GetMillisecondsTimestamp(SocketApiClient apiClient) => GetMillisecondTimestamp(apiClient);
         #endregion
     }
 }

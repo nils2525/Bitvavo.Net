@@ -31,6 +31,12 @@ namespace Bitvavo.Net.Clients.SpotApi
         /// <inheritdoc />
         public IBitvavoRestClientSpotApiExchangeData ExchangeData { get; }
 
+        /// <inheritdoc />
+        public IBitvavoRestClientSpotApiAccount Account { get; }
+
+        /// <inheritdoc />
+        public IBitvavoRestClientSpotApiTrading Trading { get; }
+
         public BitvavoRestClientSpotApi(ILogger logger, HttpClient? httpClient, BitvavoRestOptions options) :
             base(logger, httpClient, options.Environment.RestBaseAddress, options, options.ApiOptions)
         {
@@ -38,6 +44,8 @@ namespace Bitvavo.Net.Clients.SpotApi
             RequestBodyEmptyContent = string.Empty;
 
             ExchangeData = new BitvavoRestClientSpotApiExchangeData(this);
+            Account = new BitvavoRestClientSpotApiAccount(this);
+            Trading = new BitvavoRestClientSpotApiTrading(this);
         }
 
         protected override IMessageSerializer CreateSerializer()

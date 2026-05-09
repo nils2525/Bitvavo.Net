@@ -131,5 +131,19 @@ namespace Bitvavo.Net.Clients.SpotApi
         }
 
         #endregion
+
+        #region Get Order Book
+
+        /// <inheritdoc />
+        public Task<WebCallResult<BitvavoOrderBook>> GetOrderBookAsync(string market, int? depth = null, CancellationToken ct = default)
+        {
+            var parameters = new ParameterCollection();
+            parameters.AddOptional("depth", depth);
+
+            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/{market}/book", BitvavoExchange.RateLimiter.Rest, 1, false);
+            return _baseClient.SendAsync<BitvavoOrderBook>(request, parameters, ct);
+        }
+
+        #endregion
     }
 }
