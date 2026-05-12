@@ -8,6 +8,7 @@ using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Errors;
+using CryptoExchange.Net.RateLimiting.Interfaces;
 using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Logging;
 
@@ -64,6 +65,15 @@ namespace Bitvavo.Net.Clients.SpotApi
         internal async Task<WebCallResult<T>> SendToAddressAsync<T>(string baseAddress, RequestDefinition definition, ParameterCollection? parameters, CancellationToken cancellationToken, int? weight = null) where T : class
         {
             return await base.SendAsync<T>(baseAddress, definition, parameters, cancellationToken, null, weight).ConfigureAwait(false);
+        }
+
+        protected override async Task<WebCallResult<T>> GetResponseAsync2<T>(RequestDefinition requestDefinition, IRequest request, IRateLimitGate? gate, CancellationToken cancellationToken)
+        {
+            var result = await base.GetResponseAsync2<T>(requestDefinition, request, gate, cancellationToken).ConfigureAwait(false);
+            if (gate == BitvavoExchange.RateLimiter.Rest && result.ResponseHeaders != null)
+                BitvavoExchange.RateLimiter.UpdateRestRateLimitFromHeaders(requestDefinition, request.Uri.GetLeftPart(UriPartial.Authority), GetAuthenticationProvider()?.Key, result.ResponseHeaders);
+
+            return result;
         }
     }
 }

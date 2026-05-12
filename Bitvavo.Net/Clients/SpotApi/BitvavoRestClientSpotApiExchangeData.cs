@@ -59,9 +59,9 @@ namespace Bitvavo.Net.Clients.SpotApi
         /// <inheritdoc />
         public Task<WebCallResult<BitvavoTicker24h[]>> GetTickers24hAsync(CancellationToken ct = default)
         {
-            // All-markets variant costs 25 weight points per docs/rest-api/get-candlestick-data-24-h/.
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/ticker/24h", BitvavoExchange.RateLimiter.Rest, 25, false);
-            return _baseClient.SendAsync<BitvavoTicker24h[]>(request, null, ct);
+            // All-markets variant costs 25 weight points; single-market variant costs 1.
+            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/ticker/24h", BitvavoExchange.RateLimiter.Rest, 1, false);
+            return _baseClient.SendAsync<BitvavoTicker24h[]>(request, null, ct, 25);
         }
 
         /// <inheritdoc />

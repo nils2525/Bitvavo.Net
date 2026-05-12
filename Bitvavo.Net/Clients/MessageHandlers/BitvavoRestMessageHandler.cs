@@ -54,12 +54,15 @@ namespace Bitvavo.Net.Clients.MessageHandlers
             if (TryReadResetAt(responseHeaders, out var resetAt))
             {
                 // Carry the parsed errorCode/message into the error so the wrapper-side mapper
-                // logs `[105] market parameter ... is invalid.` instead of the empty fallback.
+                // logs the Bitvavo server details instead of the empty fallback.
                 var (_, document) = await GetJsonDocument(responseStream).ConfigureAwait(false);
+                var code = document?.RootElement.ValueKind == JsonValueKind.Object && document.RootElement.TryGetProperty("errorCode", out var codeProp)
+                    ? codeProp.ToString()
+                    : null;
                 var message = document?.RootElement.ValueKind == JsonValueKind.Object && document.RootElement.TryGetProperty("error", out var errorProp)
                     ? errorProp.GetString()
                     : null;
-                return new ServerRateLimitError(message) { RetryAfter = resetAt };
+                return new ServerRateLimitError(message) { ErrorCode = code, RetryAfter = resetAt };
             }
 
             // Fall back to the framework's `Retry-After` handling.

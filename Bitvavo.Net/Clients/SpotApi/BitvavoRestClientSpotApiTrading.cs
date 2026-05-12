@@ -153,10 +153,10 @@ namespace Bitvavo.Net.Clients.SpotApi
             parameters.AddOptional("base", baseAsset);
 
             // Weight is 25 without market filter, 1 with it. Use the worst-case as the static weight
-            // so per-API-key bucket accounting is conservative.
+            // as a per-call override because request definitions are cached by method/path.
             var weight = string.IsNullOrEmpty(market) ? 25 : 1;
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/ordersOpen", BitvavoExchange.RateLimiter.Rest, weight, true);
-            return _baseClient.SendAsync<BitvavoOrder[]>(request, parameters, ct);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/ordersOpen", BitvavoExchange.RateLimiter.Rest, 1, true);
+            return _baseClient.SendAsync<BitvavoOrder[]>(request, parameters, ct, weight);
         }
 
         #endregion

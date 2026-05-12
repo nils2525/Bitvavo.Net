@@ -6,6 +6,7 @@ using CryptoExchange.Net.RateLimiting.Filters;
 using CryptoExchange.Net.RateLimiting.Guards;
 using CryptoExchange.Net.RateLimiting.Interfaces;
 using CryptoExchange.Net.SharedApis;
+using System.Net.Http.Headers;
 using System.Text.Json.Serialization;
 
 namespace Bitvavo.Net
@@ -123,7 +124,9 @@ namespace Bitvavo.Net
             // and an unauth path keyed by host. Both share the same 1000/min documented budget.
             // Exceeding triggers HTTP 429 with errorCode 105 (1-min lockout for keyed users,
             // 15-min for IP-based unauthenticated users). Source: https://docs.bitvavo.com/docs/rate-limits/.
+            RestResponseHeader = new BitvavoRestHeaderRateLimitGuard();
             Rest = new RateLimitGate("Rest")
+                .AddGuard(RestResponseHeader)
                 .AddGuard(new RateLimitGuard(RateLimitGuard.PerApiKey, new IGuardFilter[] { new LimitItemTypeFilter(RateLimitItemType.Request), new AuthenticatedEndpointFilter(true) }, 1000, TimeSpan.FromMinutes(1), RateLimitWindowType.Sliding))
                 .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, new IGuardFilter[] { new LimitItemTypeFilter(RateLimitItemType.Request), new AuthenticatedEndpointFilter(false) }, 1000, TimeSpan.FromMinutes(1), RateLimitWindowType.Sliding));
 
@@ -145,7 +148,10 @@ namespace Bitvavo.Net
             MarketDataProSocket.RateLimitUpdated += (x) => RateLimitUpdated?.Invoke(x);
         }
 
+        internal void UpdateRestRateLimitFromHeaders(RequestDefinition definition, string host, string? apiKey, HttpResponseHeaders responseHeaders)
+            => RestResponseHeader.Update(definition, host, apiKey, responseHeaders);
 
+        internal BitvavoRestHeaderRateLimitGuard RestResponseHeader { get; private set; }
         internal IRateLimitGate Rest { get; private set; }
         internal IRateLimitGate ExchangeSocket { get; private set; }
         internal IRateLimitGate MarketDataProSocket { get; private set; }
