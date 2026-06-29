@@ -19,7 +19,7 @@ namespace Bitvavo.Net.Objects.Sockets
     {
         public BitvavoAuthQuery(BitvavoAuthRequest request) : base(request, false, 1)
         {
-            MessageRouter = MessageRouter.CreateWithoutTopicFilter<BitvavoAuthResponse>(
+            MessageRouter = MessageRouter.CreateForQuery<BitvavoAuthResponse>(
                 ["authenticate"], HandleMessage);
         }
 
@@ -29,10 +29,10 @@ namespace Bitvavo.Net.Objects.Sockets
             {
                 var code = message.ErrorCode?.ToString() ?? "0";
                 var info = BitvavoErrors.RestErrorMapping.GetErrorInfo(code, message.Error ?? "Authentication failed");
-                return new CallResult<BitvavoAuthResponse>(new ServerError(code, info));
+                return CallResult.Fail<BitvavoAuthResponse>(new ServerError(code, info));
             }
 
-            return new CallResult<BitvavoAuthResponse>(message, originalData, null);
+            return CallResult.Ok(message, originalData);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Bitvavo.Net.Objects.Sockets
             _markets = markets;
             _handler = handler;
 
-            MessageRouter = MessageRouter.CreateWithoutTopicFilter<BitvavoTicker24hUpdate>(["ticker24h"], DoHandleMessage);
+            MessageRouter = MessageRouter.CreateForEvent<BitvavoTicker24hUpdate>(["ticker24h"], DoHandleMessage);
         }
 
         protected override Query? GetSubQuery(SocketConnection connection)
@@ -49,7 +49,7 @@ namespace Bitvavo.Net.Objects.Sockets
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitvavoTicker24hUpdate message)
         {
             _handler.Invoke(receiveTime, originalData, message);
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoServerTime>> GetServerTimeAsync(CancellationToken ct = default);
+        Task<HttpResult<BitvavoServerTime>> GetServerTimeAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get all trading markets, including their status, base/quote and trade limits.
@@ -32,7 +32,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="market">["<c>market</c>"] Optional market filter (for example <c>BTC-EUR</c>)</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoMarket[]>> GetMarketsAsync(string? market = null, CancellationToken ct = default);
+        Task<HttpResult<BitvavoMarket[]>> GetMarketsAsync(string? market = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get all assets known to the exchange, including supported networks.
@@ -45,7 +45,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="symbol">["<c>symbol</c>"] Optional asset filter (for example <c>BTC</c>)</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoAsset[]>> GetAssetsAsync(string? symbol = null, CancellationToken ct = default);
+        Task<HttpResult<BitvavoAsset[]>> GetAssetsAsync(string? symbol = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get rolling 24h ticker statistics for ALL markets.
@@ -57,7 +57,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoTicker24h[]>> GetTickers24hAsync(CancellationToken ct = default);
+        Task<HttpResult<BitvavoTicker24h[]>> GetTickers24hAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get rolling 24h ticker statistics for a single market. Bitvavo returns a SINGLE object
@@ -71,7 +71,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="market">["<c>market</c>"] Market (for example <c>BTC-EUR</c>)</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoTicker24h>> GetTicker24hAsync(string market, CancellationToken ct = default);
+        Task<HttpResult<BitvavoTicker24h>> GetTicker24hAsync(string market, CancellationToken ct = default);
 
         /// <summary>
         /// Get the latest price for ALL markets.
@@ -83,7 +83,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoTickerPrice[]>> GetTickerPricesAsync(CancellationToken ct = default);
+        Task<HttpResult<BitvavoTickerPrice[]>> GetTickerPricesAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get the latest price for a single market. Bitvavo returns a SINGLE object
@@ -97,7 +97,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="market">["<c>market</c>"] Market (for example <c>BTC-EUR</c>)</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoTickerPrice>> GetTickerPriceAsync(string market, CancellationToken ct = default);
+        Task<HttpResult<BitvavoTickerPrice>> GetTickerPriceAsync(string market, CancellationToken ct = default);
 
         /// <summary>
         /// Get the best bid/ask snapshot for ALL markets.
@@ -109,7 +109,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoTickerBook[]>> GetTickerBooksAsync(CancellationToken ct = default);
+        Task<HttpResult<BitvavoTickerBook[]>> GetTickerBooksAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get the best bid/ask snapshot for a single market. Bitvavo returns a SINGLE object
@@ -123,7 +123,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="market">["<c>market</c>"] Market (for example <c>BTC-EUR</c>)</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoTickerBook>> GetTickerBookAsync(string market, CancellationToken ct = default);
+        Task<HttpResult<BitvavoTickerBook>> GetTickerBookAsync(string market, CancellationToken ct = default);
 
         /// <summary>
         /// Get recent public trades for a market.
@@ -137,7 +137,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// <param name="market">["<c>market</c>"] Market (for example <c>BTC-EUR</c>)</param>
         /// <param name="limit">["<c>limit</c>"] Max number of results, max 1000</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoPublicTrade[]>> GetRecentTradesAsync(string market, int? limit = null, CancellationToken ct = default);
+        Task<HttpResult<BitvavoPublicTrade[]>> GetRecentTradesAsync(string market, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get an order book snapshot for a market. The response includes a <c>nonce</c> that can be
@@ -152,6 +152,6 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// <param name="market">["<c>market</c>"] Market (for example <c>BTC-EUR</c>)</param>
         /// <param name="depth">["<c>depth</c>"] Number of bids/asks to return (max 1000, default 1000)</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoOrderBook>> GetOrderBookAsync(string market, int? depth = null, CancellationToken ct = default);
+        Task<HttpResult<BitvavoOrderBook>> GetOrderBookAsync(string market, int? depth = null, CancellationToken ct = default);
     }
 }

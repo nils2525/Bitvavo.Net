@@ -40,8 +40,8 @@ namespace Bitvavo.Net.Clients
         {
             Initialize(options.Value);
 
-            ExchangeApi = AddApiClient(new BitvavoSocketClientExchangeApi(_logger, options.Value));
-            MarketDataProApi = AddApiClient(new BitvavoSocketClientMarketDataProApi(_logger, options.Value));
+            ExchangeApi = AddApiClient(new BitvavoSocketClientExchangeApi(loggerFactory, options.Value));
+            MarketDataProApi = AddApiClient(new BitvavoSocketClientMarketDataProApi(loggerFactory, options.Value));
         }
         #endregion
 

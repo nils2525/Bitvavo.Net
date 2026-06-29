@@ -30,13 +30,14 @@ namespace Bitvavo.Net
         #region Methods
         public override void ProcessRequest(RestApiClient apiClient, RestRequestConfiguration requestConfig)
         {
-            if (!requestConfig.Authenticated)
+            if (!requestConfig.RequestDefinition.Authenticated)
                 return;
 
             var timestamp = GetMillisecondTimestamp(apiClient);
 
             var queryString = requestConfig.GetQueryString(false);
-            var pathWithQuery = string.IsNullOrEmpty(queryString) ? requestConfig.Path : requestConfig.Path + "?" + queryString;
+            var path = requestConfig.RequestDefinition.Path;
+            var pathWithQuery = string.IsNullOrEmpty(queryString) ? path : path + "?" + queryString;
 
             var bodyContent = string.Empty;
             if (requestConfig.BodyParameters?.Any() == true)
@@ -49,7 +50,7 @@ namespace Bitvavo.Net
                 requestConfig.SetBodyContent(bodyContent);
             }
 
-            var signString = timestamp + requestConfig.Method.Method.ToUpperInvariant() + pathWithQuery + bodyContent;
+            var signString = timestamp + requestConfig.RequestDefinition.Method.Method.ToUpperInvariant() + pathWithQuery + bodyContent;
             var signature = SignHMACSHA256(signString, SignOutputType.Hex);
 
             requestConfig.Headers ??= new Dictionary<string, string>();

@@ -34,8 +34,8 @@ namespace Bitvavo.Net.Clients.ExchangeSocketApi
         /// <summary>
         /// Create a new instance of BitvavoSocketClientExchangeApi
         /// </summary>
-        internal BitvavoSocketClientExchangeApi(ILogger logger, BitvavoSocketOptions options)
-            : base(logger, options.Environment.SocketExchangeBaseAddress, options, options.ExchangeOptions)
+        internal BitvavoSocketClientExchangeApi(ILoggerFactory? loggerFactory, BitvavoSocketOptions options)
+            : base(loggerFactory, BitvavoExchange.ExchangeName, options.Environment.SocketExchangeBaseAddress, options, options.ExchangeOptions)
         {
             RateLimiter = BitvavoExchange.RateLimiter.ExchangeSocket;
         }
@@ -85,7 +85,7 @@ namespace Bitvavo.Net.Clients.ExchangeSocketApi
 
         #region Subscriptions
         /// <inheritdoc />
-        public Task<CallResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string market, Action<DataEvent<BitvavoTradeUpdate>> onMessage, CancellationToken ct = default)
+        public Task<WebSocketResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string market, Action<DataEvent<BitvavoTradeUpdate>> onMessage, CancellationToken ct = default)
         {
             var internalHandler = new Action<DateTime, string?, BitvavoTradeUpdate>((receiveTime, originalData, data) =>
             {
@@ -105,7 +105,7 @@ namespace Bitvavo.Net.Clients.ExchangeSocketApi
         }
 
         /// <inheritdoc />
-        public Task<CallResult<UpdateSubscription>> SubscribeToTicker24hUpdatesAsync(string[] markets, Action<DataEvent<BitvavoTicker24hUpdate>> onMessage, CancellationToken ct = default)
+        public Task<WebSocketResult<UpdateSubscription>> SubscribeToTicker24hUpdatesAsync(string[] markets, Action<DataEvent<BitvavoTicker24hUpdate>> onMessage, CancellationToken ct = default)
         {
             var internalHandler = new Action<DateTime, string?, BitvavoTicker24hUpdate>((receiveTime, originalData, data) =>
             {
@@ -121,7 +121,7 @@ namespace Bitvavo.Net.Clients.ExchangeSocketApi
         }
 
         /// <inheritdoc />
-        public Task<CallResult<UpdateSubscription>> SubscribeToOrderBookUpdatesAsync(string market, Action<DataEvent<BitvavoOrderBookUpdate>> onMessage, CancellationToken ct = default)
+        public Task<WebSocketResult<UpdateSubscription>> SubscribeToOrderBookUpdatesAsync(string market, Action<DataEvent<BitvavoOrderBookUpdate>> onMessage, CancellationToken ct = default)
         {
             var internalHandler = new Action<DateTime, string?, BitvavoOrderBookUpdate>((receiveTime, originalData, data) =>
             {
@@ -138,7 +138,7 @@ namespace Bitvavo.Net.Clients.ExchangeSocketApi
         }
 
         /// <inheritdoc />
-        public Task<CallResult<UpdateSubscription>> SubscribeToAccountUpdatesAsync(string[] markets, Action<DataEvent<BitvavoOrderUpdate>> onOrderUpdate, Action<DataEvent<BitvavoFillUpdate>> onFillUpdate, CancellationToken ct = default)
+        public Task<WebSocketResult<UpdateSubscription>> SubscribeToAccountUpdatesAsync(string[] markets, Action<DataEvent<BitvavoOrderUpdate>> onOrderUpdate, Action<DataEvent<BitvavoFillUpdate>> onFillUpdate, CancellationToken ct = default)
         {
             var (orderHandler, fillHandler) = BuildAccountHandlers(onOrderUpdate, onFillUpdate);
             var subscription = new BitvavoAccountSubscription(_logger, markets, orderHandler, fillHandler);
@@ -146,7 +146,7 @@ namespace Bitvavo.Net.Clients.ExchangeSocketApi
         }
 
         /// <inheritdoc />
-        public Task<CallResult<UpdateSubscription>> SubscribeToAccountUpdatesAsync(Action<DataEvent<BitvavoOrderUpdate>> onOrderUpdate, Action<DataEvent<BitvavoFillUpdate>> onFillUpdate, CancellationToken ct = default)
+        public Task<WebSocketResult<UpdateSubscription>> SubscribeToAccountUpdatesAsync(Action<DataEvent<BitvavoOrderUpdate>> onOrderUpdate, Action<DataEvent<BitvavoFillUpdate>> onFillUpdate, CancellationToken ct = default)
         {
             var (orderHandler, fillHandler) = BuildAccountHandlers(onOrderUpdate, onFillUpdate);
             var subscription = BitvavoAccountSubscription.CreateWildcard(_logger, orderHandler, fillHandler);

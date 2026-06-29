@@ -18,9 +18,9 @@ namespace Bitvavo.Net.Clients.SpotApi
         #region Get Server Time
 
         /// <inheritdoc />
-        public Task<WebCallResult<BitvavoServerTime>> GetServerTimeAsync(CancellationToken ct = default)
+        public Task<HttpResult<BitvavoServerTime>> GetServerTimeAsync(CancellationToken ct = default)
         {
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/time", BitvavoExchange.RateLimiter.Rest, 1, false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v2/time", BitvavoExchange.RateLimiter.Rest, 1, false);
             return _baseClient.SendAsync<BitvavoServerTime>(request, null, ct);
         }
 
@@ -29,12 +29,12 @@ namespace Bitvavo.Net.Clients.SpotApi
         #region Get Markets
 
         /// <inheritdoc />
-        public Task<WebCallResult<BitvavoMarket[]>> GetMarketsAsync(string? market = null, CancellationToken ct = default)
+        public Task<HttpResult<BitvavoMarket[]>> GetMarketsAsync(string? market = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptional("market", market);
+            var parameters = new Parameters(BitvavoExchange._parameterSerializationSettings);
+            parameters.Add("market", market);
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/markets", BitvavoExchange.RateLimiter.Rest, 1, false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v2/markets", BitvavoExchange.RateLimiter.Rest, 1, false);
             return _baseClient.SendAsync<BitvavoMarket[]>(request, parameters, ct);
         }
 
@@ -43,12 +43,12 @@ namespace Bitvavo.Net.Clients.SpotApi
         #region Get Assets
 
         /// <inheritdoc />
-        public Task<WebCallResult<BitvavoAsset[]>> GetAssetsAsync(string? symbol = null, CancellationToken ct = default)
+        public Task<HttpResult<BitvavoAsset[]>> GetAssetsAsync(string? symbol = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptional("symbol", symbol);
+            var parameters = new Parameters(BitvavoExchange._parameterSerializationSettings);
+            parameters.Add("symbol", symbol);
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/assets", BitvavoExchange.RateLimiter.Rest, 1, false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v2/assets", BitvavoExchange.RateLimiter.Rest, 1, false);
             return _baseClient.SendAsync<BitvavoAsset[]>(request, parameters, ct);
         }
 
@@ -57,20 +57,20 @@ namespace Bitvavo.Net.Clients.SpotApi
         #region Get Tickers 24h
 
         /// <inheritdoc />
-        public Task<WebCallResult<BitvavoTicker24h[]>> GetTickers24hAsync(CancellationToken ct = default)
+        public Task<HttpResult<BitvavoTicker24h[]>> GetTickers24hAsync(CancellationToken ct = default)
         {
             // All-markets variant costs 25 weight points; single-market variant costs 1.
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/ticker/24h", BitvavoExchange.RateLimiter.Rest, 1, false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v2/ticker/24h", BitvavoExchange.RateLimiter.Rest, 1, false);
             return _baseClient.SendAsync<BitvavoTicker24h[]>(request, null, ct, 25);
         }
 
         /// <inheritdoc />
-        public Task<WebCallResult<BitvavoTicker24h>> GetTicker24hAsync(string market, CancellationToken ct = default)
+        public Task<HttpResult<BitvavoTicker24h>> GetTicker24hAsync(string market, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
+            var parameters = new Parameters(BitvavoExchange._parameterSerializationSettings);
             parameters.Add("market", market);
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/ticker/24h", BitvavoExchange.RateLimiter.Rest, 1, false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v2/ticker/24h", BitvavoExchange.RateLimiter.Rest, 1, false);
             return _baseClient.SendAsync<BitvavoTicker24h>(request, parameters, ct);
         }
 
@@ -79,19 +79,19 @@ namespace Bitvavo.Net.Clients.SpotApi
         #region Get Ticker Prices
 
         /// <inheritdoc />
-        public Task<WebCallResult<BitvavoTickerPrice[]>> GetTickerPricesAsync(CancellationToken ct = default)
+        public Task<HttpResult<BitvavoTickerPrice[]>> GetTickerPricesAsync(CancellationToken ct = default)
         {
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/ticker/price", BitvavoExchange.RateLimiter.Rest, 1, false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v2/ticker/price", BitvavoExchange.RateLimiter.Rest, 1, false);
             return _baseClient.SendAsync<BitvavoTickerPrice[]>(request, null, ct);
         }
 
         /// <inheritdoc />
-        public Task<WebCallResult<BitvavoTickerPrice>> GetTickerPriceAsync(string market, CancellationToken ct = default)
+        public Task<HttpResult<BitvavoTickerPrice>> GetTickerPriceAsync(string market, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
+            var parameters = new Parameters(BitvavoExchange._parameterSerializationSettings);
             parameters.Add("market", market);
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/ticker/price", BitvavoExchange.RateLimiter.Rest, 1, false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v2/ticker/price", BitvavoExchange.RateLimiter.Rest, 1, false);
             return _baseClient.SendAsync<BitvavoTickerPrice>(request, parameters, ct);
         }
 
@@ -100,19 +100,19 @@ namespace Bitvavo.Net.Clients.SpotApi
         #region Get Ticker Books
 
         /// <inheritdoc />
-        public Task<WebCallResult<BitvavoTickerBook[]>> GetTickerBooksAsync(CancellationToken ct = default)
+        public Task<HttpResult<BitvavoTickerBook[]>> GetTickerBooksAsync(CancellationToken ct = default)
         {
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/ticker/book", BitvavoExchange.RateLimiter.Rest, 1, false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v2/ticker/book", BitvavoExchange.RateLimiter.Rest, 1, false);
             return _baseClient.SendAsync<BitvavoTickerBook[]>(request, null, ct);
         }
 
         /// <inheritdoc />
-        public Task<WebCallResult<BitvavoTickerBook>> GetTickerBookAsync(string market, CancellationToken ct = default)
+        public Task<HttpResult<BitvavoTickerBook>> GetTickerBookAsync(string market, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
+            var parameters = new Parameters(BitvavoExchange._parameterSerializationSettings);
             parameters.Add("market", market);
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/ticker/book", BitvavoExchange.RateLimiter.Rest, 1, false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v2/ticker/book", BitvavoExchange.RateLimiter.Rest, 1, false);
             return _baseClient.SendAsync<BitvavoTickerBook>(request, parameters, ct);
         }
 
@@ -121,12 +121,12 @@ namespace Bitvavo.Net.Clients.SpotApi
         #region Get Recent Trades
 
         /// <inheritdoc />
-        public Task<WebCallResult<BitvavoPublicTrade[]>> GetRecentTradesAsync(string market, int? limit = null, CancellationToken ct = default)
+        public Task<HttpResult<BitvavoPublicTrade[]>> GetRecentTradesAsync(string market, int? limit = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptional("limit", limit);
+            var parameters = new Parameters(BitvavoExchange._parameterSerializationSettings);
+            parameters.Add("limit", limit);
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/{market}/trades", BitvavoExchange.RateLimiter.Rest, 5, false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, $"/v2/{market}/trades", BitvavoExchange.RateLimiter.Rest, 5, false);
             return _baseClient.SendAsync<BitvavoPublicTrade[]>(request, parameters, ct);
         }
 
@@ -135,12 +135,12 @@ namespace Bitvavo.Net.Clients.SpotApi
         #region Get Order Book
 
         /// <inheritdoc />
-        public Task<WebCallResult<BitvavoOrderBook>> GetOrderBookAsync(string market, int? depth = null, CancellationToken ct = default)
+        public Task<HttpResult<BitvavoOrderBook>> GetOrderBookAsync(string market, int? depth = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptional("depth", depth);
+            var parameters = new Parameters(BitvavoExchange._parameterSerializationSettings);
+            parameters.Add("depth", depth);
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, $"/v2/{market}/book", BitvavoExchange.RateLimiter.Rest, 1, false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, $"/v2/{market}/book", BitvavoExchange.RateLimiter.Rest, 1, false);
             return _baseClient.SendAsync<BitvavoOrderBook>(request, parameters, ct);
         }
 

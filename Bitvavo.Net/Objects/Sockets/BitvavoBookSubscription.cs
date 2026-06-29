@@ -24,7 +24,7 @@ namespace Bitvavo.Net.Objects.Sockets
             _market = market;
             _handler = handler;
 
-            MessageRouter = MessageRouter.CreateWithTopicFilter<BitvavoOrderBookUpdate>("book", market, DoHandleMessage);
+            MessageRouter = MessageRouter.CreateForEvent<BitvavoOrderBookUpdate>("book", market, DoHandleMessage);
         }
 
         protected override Query? GetSubQuery(SocketConnection connection)
@@ -50,7 +50,7 @@ namespace Bitvavo.Net.Objects.Sockets
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitvavoOrderBookUpdate message)
         {
             _handler.Invoke(receiveTime, originalData, message);
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
     }
 }

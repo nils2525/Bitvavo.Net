@@ -22,7 +22,7 @@ namespace Bitvavo.Net.Interfaces.Clients.ExchangeSocketApi
         /// <param name="market">Market (for example <c>BTC-EUR</c>)</param>
         /// <param name="onMessage">Trade event handler</param>
         /// <param name="ct">Cancellation token for closing this subscription</param>
-        Task<CallResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string market, Action<DataEvent<BitvavoTradeUpdate>> onMessage, CancellationToken ct = default);
+        Task<WebSocketResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string market, Action<DataEvent<BitvavoTradeUpdate>> onMessage, CancellationToken ct = default);
 
         /// <summary>
         /// Subscribe to the rolling 24h ticker stream for one or more markets.
@@ -35,7 +35,7 @@ namespace Bitvavo.Net.Interfaces.Clients.ExchangeSocketApi
         /// <param name="markets">Markets to subscribe to (for example <c>BTC-EUR</c>)</param>
         /// <param name="onMessage">Ticker event handler. The exchange may batch multiple markets into a single update.</param>
         /// <param name="ct">Cancellation token for closing this subscription</param>
-        Task<CallResult<UpdateSubscription>> SubscribeToTicker24hUpdatesAsync(string[] markets, Action<DataEvent<BitvavoTicker24hUpdate>> onMessage, CancellationToken ct = default);
+        Task<WebSocketResult<UpdateSubscription>> SubscribeToTicker24hUpdatesAsync(string[] markets, Action<DataEvent<BitvavoTicker24hUpdate>> onMessage, CancellationToken ct = default);
 
         /// <summary>
         /// Subscribe to incremental order book updates for a market. Emits deltas; size 0 indicates
@@ -49,7 +49,7 @@ namespace Bitvavo.Net.Interfaces.Clients.ExchangeSocketApi
         /// <param name="market">Market (for example <c>BTC-EUR</c>)</param>
         /// <param name="onMessage">Order book update event handler</param>
         /// <param name="ct">Cancellation token for closing this subscription</param>
-        Task<CallResult<UpdateSubscription>> SubscribeToOrderBookUpdatesAsync(string market, Action<DataEvent<BitvavoOrderBookUpdate>> onMessage, CancellationToken ct = default);
+        Task<WebSocketResult<UpdateSubscription>> SubscribeToOrderBookUpdatesAsync(string market, Action<DataEvent<BitvavoOrderBookUpdate>> onMessage, CancellationToken ct = default);
 
         /// <summary>
         /// Subscribe to the authenticated <c>account</c> channel for one or more markets. Emits both
@@ -67,7 +67,7 @@ namespace Bitvavo.Net.Interfaces.Clients.ExchangeSocketApi
         /// <param name="onOrderUpdate">Order status update handler</param>
         /// <param name="onFillUpdate">Fill (execution) handler</param>
         /// <param name="ct">Cancellation token for closing this subscription</param>
-        Task<CallResult<UpdateSubscription>> SubscribeToAccountUpdatesAsync(string[] markets, Action<DataEvent<BitvavoOrderUpdate>> onOrderUpdate, Action<DataEvent<BitvavoFillUpdate>> onFillUpdate, CancellationToken ct = default);
+        Task<WebSocketResult<UpdateSubscription>> SubscribeToAccountUpdatesAsync(string[] markets, Action<DataEvent<BitvavoOrderUpdate>> onOrderUpdate, Action<DataEvent<BitvavoFillUpdate>> onFillUpdate, CancellationToken ct = default);
 
         /// <summary>
         /// Subscribe to the authenticated <c>account</c> channel for all currently listed markets via
@@ -86,6 +86,6 @@ namespace Bitvavo.Net.Interfaces.Clients.ExchangeSocketApi
         /// <param name="onOrderUpdate">Order status update handler</param>
         /// <param name="onFillUpdate">Fill (execution) handler</param>
         /// <param name="ct">Cancellation token for closing this subscription</param>
-        Task<CallResult<UpdateSubscription>> SubscribeToAccountUpdatesAsync(Action<DataEvent<BitvavoOrderUpdate>> onOrderUpdate, Action<DataEvent<BitvavoFillUpdate>> onFillUpdate, CancellationToken ct = default);
+        Task<WebSocketResult<UpdateSubscription>> SubscribeToAccountUpdatesAsync(Action<DataEvent<BitvavoOrderUpdate>> onOrderUpdate, Action<DataEvent<BitvavoFillUpdate>> onFillUpdate, CancellationToken ct = default);
     }
 }

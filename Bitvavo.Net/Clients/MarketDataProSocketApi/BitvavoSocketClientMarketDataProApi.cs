@@ -32,8 +32,8 @@ namespace Bitvavo.Net.Clients.MarketDataProSocketApi
         /// <summary>
         /// Create a new instance of BitvavoSocketClientMarketDataProApi
         /// </summary>
-        internal BitvavoSocketClientMarketDataProApi(ILogger logger, BitvavoSocketOptions options)
-            : base(logger, options.Environment.SocketMarketDataProBaseAddress, options, options.MarketDataProOptions)
+        internal BitvavoSocketClientMarketDataProApi(ILoggerFactory? loggerFactory, BitvavoSocketOptions options)
+            : base(loggerFactory, BitvavoExchange.ExchangeName, options.Environment.SocketMarketDataProBaseAddress, options, options.MarketDataProOptions)
         {
             RateLimiter = BitvavoExchange.RateLimiter.MarketDataProSocket;
         }
@@ -55,7 +55,7 @@ namespace Bitvavo.Net.Clients.MarketDataProSocketApi
 
         #region Subscriptions
         /// <inheritdoc />
-        public Task<CallResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string market, Action<DataEvent<BitvavoTradeUpdate>> onMessage, CancellationToken ct = default)
+        public Task<WebSocketResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string market, Action<DataEvent<BitvavoTradeUpdate>> onMessage, CancellationToken ct = default)
         {
             var internalHandler = new Action<DateTime, string?, BitvavoTradeUpdate>((receiveTime, originalData, data) =>
             {

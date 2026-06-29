@@ -19,7 +19,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoAccount>> GetAccountAsync(CancellationToken ct = default);
+        Task<HttpResult<BitvavoAccount>> GetAccountAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get balances for one asset or all assets with a non-zero balance.
@@ -32,7 +32,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// </summary>
         /// <param name="symbol">["<c>symbol</c>"] Optional asset filter (for example <c>BTC</c>)</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoBalance[]>> GetBalancesAsync(string? symbol = null, CancellationToken ct = default);
+        Task<HttpResult<BitvavoBalance[]>> GetBalancesAsync(string? symbol = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get past deposits for the account.
@@ -48,7 +48,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// <param name="startTime">["<c>start</c>"] Earliest timestamp</param>
         /// <param name="endTime">["<c>end</c>"] Latest timestamp</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoDeposit[]>> GetDepositHistoryAsync(string? symbol = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, CancellationToken ct = default);
+        Task<HttpResult<BitvavoDeposit[]>> GetDepositHistoryAsync(string? symbol = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get past withdrawals for the account.
@@ -64,7 +64,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// <param name="startTime">["<c>start</c>"] Earliest timestamp</param>
         /// <param name="endTime">["<c>end</c>"] Latest timestamp</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoWithdrawal[]>> GetWithdrawalHistoryAsync(string? symbol = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, CancellationToken ct = default);
+        Task<HttpResult<BitvavoWithdrawal[]>> GetWithdrawalHistoryAsync(string? symbol = null, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get a unified, paginated transaction history covering trades, deposits, withdrawals,
@@ -83,7 +83,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// <param name="maxItems">["<c>maxItems</c>"] Items per page (1-100)</param>
         /// <param name="type">["<c>type</c>"] Optional transaction-type filter</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoTransactionHistory>> GetTransactionHistoryAsync(DateTime? fromDate = null, DateTime? toDate = null, int? page = null, int? maxItems = null, BitvavoTransactionType? type = null, CancellationToken ct = default);
+        Task<HttpResult<BitvavoTransactionHistory>> GetTransactionHistoryAsync(DateTime? fromDate = null, DateTime? toDate = null, int? page = null, int? maxItems = null, BitvavoTransactionType? type = null, CancellationToken ct = default);
 
         /// <summary>
         /// Submit a withdrawal request.
@@ -100,6 +100,6 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// <param name="paymentId">["<c>paymentId</c>"] Optional payment id / memo</param>
         /// <param name="addWithdrawalFee">["<c>addWithdrawalFee</c>"] Add the fee on top of <paramref name="amount"/> instead of subtracting it</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoWithdrawalResult>> WithdrawAsync(string symbol, decimal amount, string address, string? paymentId = null, bool? addWithdrawalFee = null, CancellationToken ct = default);
+        Task<HttpResult<BitvavoWithdrawalResult>> WithdrawAsync(string symbol, decimal amount, string address, string? paymentId = null, bool? addWithdrawalFee = null, CancellationToken ct = default);
     }
 }

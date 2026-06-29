@@ -38,8 +38,8 @@ namespace Bitvavo.Net.Clients.SpotApi
         /// <inheritdoc />
         public IBitvavoRestClientSpotApiTrading Trading { get; }
 
-        public BitvavoRestClientSpotApi(ILogger logger, HttpClient? httpClient, BitvavoRestOptions options) :
-            base(logger, httpClient, options.Environment.RestBaseAddress, options, options.ApiOptions)
+        public BitvavoRestClientSpotApi(ILoggerFactory? loggerFactory, HttpClient? httpClient, BitvavoRestOptions options) :
+            base(loggerFactory, BitvavoExchange.ExchangeName, httpClient, options.Environment.RestBaseAddress, options, options.ApiOptions)
         {
             RequestBodyFormat = RequestBodyFormat.Json;
             RequestBodyEmptyContent = string.Empty;
@@ -59,15 +59,10 @@ namespace Bitvavo.Net.Clients.SpotApi
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
                 => BitvavoExchange.FormatSymbol(baseAsset, quoteAsset, tradingMode, deliverTime);
 
-        internal Task<WebCallResult<T>> SendAsync<T>(RequestDefinition definition, ParameterCollection? parameters, CancellationToken cancellationToken, int? weight = null) where T : class
-            => SendToAddressAsync<T>(BaseAddress, definition, parameters, cancellationToken, weight);
+        internal Task<HttpResult<T>> SendAsync<T>(RequestDefinition definition, Parameters? parameters, CancellationToken cancellationToken, int? weight = null) where T : class
+            => base.SendAsync<T>(definition, parameters, cancellationToken, null, weight);
 
-        internal async Task<WebCallResult<T>> SendToAddressAsync<T>(string baseAddress, RequestDefinition definition, ParameterCollection? parameters, CancellationToken cancellationToken, int? weight = null) where T : class
-        {
-            return await base.SendAsync<T>(baseAddress, definition, parameters, cancellationToken, null, weight).ConfigureAwait(false);
-        }
-
-        protected override async Task<WebCallResult<T>> GetResponseAsync2<T>(RequestDefinition requestDefinition, IRequest request, IRateLimitGate? gate, CancellationToken cancellationToken)
+        protected override async Task<HttpResult<T>> GetResponseAsync2<T>(RequestDefinition requestDefinition, IRequest request, IRateLimitGate? gate, CancellationToken cancellationToken)
         {
             var result = await base.GetResponseAsync2<T>(requestDefinition, request, gate, cancellationToken).ConfigureAwait(false);
             if (gate == BitvavoExchange.RateLimiter.Rest && result.ResponseHeaders != null)

@@ -29,7 +29,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// <param name="selfTradePrevention">["<c>selfTradePrevention</c>"] Optional self-trade prevention strategy</param>
         /// <param name="responseRequired">["<c>responseRequired</c>"] Set to <c>false</c> to skip the response body</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoOrder>> PlaceLimitOrderAsync(
+        Task<HttpResult<BitvavoOrder>> PlaceLimitOrderAsync(
             string market,
             OrderSide side,
             decimal amount,
@@ -59,7 +59,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// <param name="clientOrderId">["<c>clientOrderId</c>"] Optional client order id (UUID)</param>
         /// <param name="responseRequired">["<c>responseRequired</c>"] Set to <c>false</c> to skip the response body</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoOrder>> PlaceMarketOrderAsync(
+        Task<HttpResult<BitvavoOrder>> PlaceMarketOrderAsync(
             string market,
             OrderSide side,
             long operatorId,
@@ -83,7 +83,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// <param name="orderId">["<c>orderId</c>"] Bitvavo order identifier (UUID)</param>
         /// <param name="clientOrderId">["<c>clientOrderId</c>"] Client order id (UUID); takes precedence if both ids are supplied</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoCancelOrderResult>> CancelOrderAsync(
+        Task<HttpResult<BitvavoCancelOrderResult>> CancelOrderAsync(
             string market,
             long operatorId,
             string? orderId = null,
@@ -103,7 +103,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// <param name="orderId">["<c>orderId</c>"] Bitvavo order identifier</param>
         /// <param name="clientOrderId">["<c>clientOrderId</c>"] Client order id; takes precedence if both supplied</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoOrder>> GetOrderAsync(string market, string? orderId = null, string? clientOrderId = null, CancellationToken ct = default);
+        Task<HttpResult<BitvavoOrder>> GetOrderAsync(string market, string? orderId = null, string? clientOrderId = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get historical orders for a market.
@@ -121,7 +121,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// <param name="orderIdFrom">["<c>orderIdFrom</c>"] Pagination cursor (start)</param>
         /// <param name="orderIdTo">["<c>orderIdTo</c>"] Pagination cursor (end)</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoOrder[]>> GetOrdersAsync(string market, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, string? orderIdFrom = null, string? orderIdTo = null, CancellationToken ct = default);
+        Task<HttpResult<BitvavoOrder[]>> GetOrdersAsync(string market, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, string? orderIdFrom = null, string? orderIdTo = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get currently open orders, optionally filtered by market or base asset.
@@ -135,7 +135,7 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// <param name="market">["<c>market</c>"] Optional market filter</param>
         /// <param name="baseAsset">["<c>base</c>"] Optional base-asset filter</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoOrder[]>> GetOpenOrdersAsync(string? market = null, string? baseAsset = null, CancellationToken ct = default);
+        Task<HttpResult<BitvavoOrder[]>> GetOpenOrdersAsync(string? market = null, string? baseAsset = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get authenticated user trades for a market (max 24h window).
@@ -153,6 +153,6 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
         /// <param name="tradeIdFrom">["<c>tradeIdFrom</c>"] Pagination cursor (start)</param>
         /// <param name="tradeIdTo">["<c>tradeIdTo</c>"] Pagination cursor (end)</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<BitvavoUserTrade[]>> GetUserTradesAsync(string market, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, string? tradeIdFrom = null, string? tradeIdTo = null, CancellationToken ct = default);
+        Task<HttpResult<BitvavoUserTrade[]>> GetUserTradesAsync(string market, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, string? tradeIdFrom = null, string? tradeIdTo = null, CancellationToken ct = default);
     }
 }

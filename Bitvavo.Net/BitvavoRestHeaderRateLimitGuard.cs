@@ -26,12 +26,12 @@ namespace Bitvavo.Net
         public string Description => "Limit based on Bitvavo REST rate-limit response headers";
 
         /// <inheritdoc />
-        public LimitCheck Check(RateLimitItemType type, RequestDefinition definition, string host, string? apiKey, int requestWeight, string? keySuffix)
+        public LimitCheck Check(RateLimitItemType type, RequestDefinition definition, string? apiKey, int requestWeight, string? keySuffix)
         {
             if (type != RateLimitItemType.Request)
                 return LimitCheck.NotApplicable;
 
-            var key = GetKey(definition, host, apiKey);
+            var key = GetKey(definition, apiKey);
             lock (_sync)
             {
                 if (!_states.TryGetValue(key, out var state))
@@ -58,12 +58,12 @@ namespace Bitvavo.Net
         /// may decrement past the server-authoritative state and brief out-of-order <see cref="Update"/> calls can
         /// rewind it; both self-correct on the next response.
         /// </remarks>
-        public RateLimitState ApplyWeight(RateLimitItemType type, RequestDefinition definition, string host, string? apiKey, int requestWeight, string? keySuffix)
+        public RateLimitState ApplyWeight(RateLimitItemType type, RequestDefinition definition, string? apiKey, int requestWeight, string? keySuffix)
         {
             if (type != RateLimitItemType.Request)
                 return RateLimitState.NotApplied;
 
-            var key = GetKey(definition, host, apiKey);
+            var key = GetKey(definition, apiKey);
             lock (_sync)
             {
                 if (!_states.TryGetValue(key, out var state) || state.ResetAt <= DateTime.UtcNow)
@@ -76,9 +76,9 @@ namespace Bitvavo.Net
         }
 
         /// <inheritdoc />
-        public void Reset(RateLimitItemType type, RequestDefinition definition, string host, string? apiKey, string? keySuffix)
+        public void Reset(RateLimitItemType type, RequestDefinition definition, string? apiKey, string? keySuffix, int? amount)
         {
-            var key = GetKey(definition, host, apiKey);
+            var key = GetKey(definition, apiKey);
             lock (_sync)
                 _states.Remove(key);
         }
@@ -101,6 +101,9 @@ namespace Bitvavo.Net
 
         // Bitvavo tracks signed traffic by API key and unsigned public traffic by IP. This client only signs
         // requests whose definitions are authenticated, so public endpoint headers belong to the host bucket.
+        private static string GetKey(RequestDefinition definition, string? apiKey)
+            => GetKey(definition, definition.BaseAddress, apiKey);
+
         private static string GetKey(RequestDefinition definition, string host, string? apiKey)
             => definition.Authenticated && !string.IsNullOrEmpty(apiKey)
                 ? $"api-key:{apiKey}"

@@ -19,7 +19,7 @@ namespace Bitvavo.Net.Clients.SpotApi
         #region Place Limit Order
 
         /// <inheritdoc />
-        public Task<WebCallResult<BitvavoOrder>> PlaceLimitOrderAsync(
+        public Task<HttpResult<BitvavoOrder>> PlaceLimitOrderAsync(
             string market,
             OrderSide side,
             decimal amount,
@@ -32,20 +32,20 @@ namespace Bitvavo.Net.Clients.SpotApi
             bool? responseRequired = null,
             CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
+            var parameters = new Parameters(BitvavoExchange._parameterSerializationSettings);
             parameters.Add("market", market);
-            parameters.AddEnum("side", side);
-            parameters.AddEnum("orderType", OrderType.Limit);
+            parameters.Add("side", side);
+            parameters.Add("orderType", OrderType.Limit);
             parameters.Add("operatorId", operatorId);
-            parameters.AddString("amount", amount);
-            parameters.AddString("price", price);
-            parameters.AddOptional("clientOrderId", clientOrderId);
-            parameters.AddOptionalEnum("timeInForce", timeInForce);
-            parameters.AddOptional("postOnly", postOnly);
-            parameters.AddOptional("selfTradePrevention", selfTradePrevention);
-            parameters.AddOptional("responseRequired", responseRequired);
+            parameters.Add("amount", amount);
+            parameters.Add("price", price);
+            parameters.Add("clientOrderId", clientOrderId);
+            parameters.Add("timeInForce", timeInForce);
+            parameters.Add("postOnly", postOnly);
+            parameters.Add("selfTradePrevention", selfTradePrevention);
+            parameters.Add("responseRequired", responseRequired);
 
-            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/order", BitvavoExchange.RateLimiter.Rest, 1, true);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, _baseClient.BaseAddress, "/v2/order", BitvavoExchange.RateLimiter.Rest, 1, true);
             return _baseClient.SendAsync<BitvavoOrder>(request, parameters, ct);
         }
 
@@ -54,7 +54,7 @@ namespace Bitvavo.Net.Clients.SpotApi
         #region Place Market Order
 
         /// <inheritdoc />
-        public Task<WebCallResult<BitvavoOrder>> PlaceMarketOrderAsync(
+        public Task<HttpResult<BitvavoOrder>> PlaceMarketOrderAsync(
             string market,
             OrderSide side,
             long operatorId,
@@ -64,17 +64,17 @@ namespace Bitvavo.Net.Clients.SpotApi
             bool? responseRequired = null,
             CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
+            var parameters = new Parameters(BitvavoExchange._parameterSerializationSettings);
             parameters.Add("market", market);
-            parameters.AddEnum("side", side);
-            parameters.AddEnum("orderType", OrderType.Market);
+            parameters.Add("side", side);
+            parameters.Add("orderType", OrderType.Market);
             parameters.Add("operatorId", operatorId);
-            parameters.AddOptionalString("amount", amount);
-            parameters.AddOptionalString("amountQuote", amountQuote);
-            parameters.AddOptional("clientOrderId", clientOrderId);
-            parameters.AddOptional("responseRequired", responseRequired);
+            parameters.Add("amount", amount);
+            parameters.Add("amountQuote", amountQuote);
+            parameters.Add("clientOrderId", clientOrderId);
+            parameters.Add("responseRequired", responseRequired);
 
-            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v2/order", BitvavoExchange.RateLimiter.Rest, 1, true);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, _baseClient.BaseAddress, "/v2/order", BitvavoExchange.RateLimiter.Rest, 1, true);
             return _baseClient.SendAsync<BitvavoOrder>(request, parameters, ct);
         }
 
@@ -83,7 +83,7 @@ namespace Bitvavo.Net.Clients.SpotApi
         #region Cancel Order
 
         /// <inheritdoc />
-        public Task<WebCallResult<BitvavoCancelOrderResult>> CancelOrderAsync(
+        public Task<HttpResult<BitvavoCancelOrderResult>> CancelOrderAsync(
             string market,
             long operatorId,
             string? orderId = null,
@@ -93,13 +93,13 @@ namespace Bitvavo.Net.Clients.SpotApi
             if (string.IsNullOrEmpty(orderId) && string.IsNullOrEmpty(clientOrderId))
                 throw new ArgumentException("Either orderId or clientOrderId must be supplied.");
 
-            var parameters = new ParameterCollection();
+            var parameters = new Parameters(BitvavoExchange._parameterSerializationSettings);
             parameters.Add("market", market);
             parameters.Add("operatorId", operatorId);
-            parameters.AddOptional("orderId", orderId);
-            parameters.AddOptional("clientOrderId", clientOrderId);
+            parameters.Add("orderId", orderId);
+            parameters.Add("clientOrderId", clientOrderId);
 
-            var request = _definitions.GetOrCreate(HttpMethod.Delete, "/v2/order", BitvavoExchange.RateLimiter.Rest, 1, true);
+            var request = _definitions.GetOrCreate(HttpMethod.Delete, _baseClient.BaseAddress, "/v2/order", BitvavoExchange.RateLimiter.Rest, 1, true);
             return _baseClient.SendAsync<BitvavoCancelOrderResult>(request, parameters, ct);
         }
 
@@ -108,17 +108,17 @@ namespace Bitvavo.Net.Clients.SpotApi
         #region Get Order
 
         /// <inheritdoc />
-        public Task<WebCallResult<BitvavoOrder>> GetOrderAsync(string market, string? orderId = null, string? clientOrderId = null, CancellationToken ct = default)
+        public Task<HttpResult<BitvavoOrder>> GetOrderAsync(string market, string? orderId = null, string? clientOrderId = null, CancellationToken ct = default)
         {
             if (string.IsNullOrEmpty(orderId) && string.IsNullOrEmpty(clientOrderId))
                 throw new ArgumentException("Either orderId or clientOrderId must be supplied.");
 
-            var parameters = new ParameterCollection();
+            var parameters = new Parameters(BitvavoExchange._parameterSerializationSettings);
             parameters.Add("market", market);
-            parameters.AddOptional("orderId", orderId);
-            parameters.AddOptional("clientOrderId", clientOrderId);
+            parameters.Add("orderId", orderId);
+            parameters.Add("clientOrderId", clientOrderId);
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/order", BitvavoExchange.RateLimiter.Rest, 1, true);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v2/order", BitvavoExchange.RateLimiter.Rest, 1, true);
             return _baseClient.SendAsync<BitvavoOrder>(request, parameters, ct);
         }
 
@@ -127,17 +127,17 @@ namespace Bitvavo.Net.Clients.SpotApi
         #region Get Orders
 
         /// <inheritdoc />
-        public Task<WebCallResult<BitvavoOrder[]>> GetOrdersAsync(string market, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, string? orderIdFrom = null, string? orderIdTo = null, CancellationToken ct = default)
+        public Task<HttpResult<BitvavoOrder[]>> GetOrdersAsync(string market, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, string? orderIdFrom = null, string? orderIdTo = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
+            var parameters = new Parameters(BitvavoExchange._parameterSerializationSettings);
             parameters.Add("market", market);
-            parameters.AddOptional("limit", limit);
-            parameters.AddOptionalMilliseconds("start", startTime);
-            parameters.AddOptionalMilliseconds("end", endTime);
-            parameters.AddOptional("orderIdFrom", orderIdFrom);
-            parameters.AddOptional("orderIdTo", orderIdTo);
+            parameters.Add("limit", limit);
+            parameters.Add("start", startTime);
+            parameters.Add("end", endTime);
+            parameters.Add("orderIdFrom", orderIdFrom);
+            parameters.Add("orderIdTo", orderIdTo);
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/orders", BitvavoExchange.RateLimiter.Rest, 5, true);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v2/orders", BitvavoExchange.RateLimiter.Rest, 5, true);
             return _baseClient.SendAsync<BitvavoOrder[]>(request, parameters, ct);
         }
 
@@ -146,16 +146,16 @@ namespace Bitvavo.Net.Clients.SpotApi
         #region Get Open Orders
 
         /// <inheritdoc />
-        public Task<WebCallResult<BitvavoOrder[]>> GetOpenOrdersAsync(string? market = null, string? baseAsset = null, CancellationToken ct = default)
+        public Task<HttpResult<BitvavoOrder[]>> GetOpenOrdersAsync(string? market = null, string? baseAsset = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptional("market", market);
-            parameters.AddOptional("base", baseAsset);
+            var parameters = new Parameters(BitvavoExchange._parameterSerializationSettings);
+            parameters.Add("market", market);
+            parameters.Add("base", baseAsset);
 
             // Weight is 25 without market filter, 1 with it. Use the worst-case as the static weight
             // as a per-call override because request definitions are cached by method/path.
             var weight = string.IsNullOrEmpty(market) ? 25 : 1;
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/ordersOpen", BitvavoExchange.RateLimiter.Rest, 1, true);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v2/ordersOpen", BitvavoExchange.RateLimiter.Rest, 1, true);
             return _baseClient.SendAsync<BitvavoOrder[]>(request, parameters, ct, weight);
         }
 
@@ -164,17 +164,17 @@ namespace Bitvavo.Net.Clients.SpotApi
         #region Get User Trades
 
         /// <inheritdoc />
-        public Task<WebCallResult<BitvavoUserTrade[]>> GetUserTradesAsync(string market, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, string? tradeIdFrom = null, string? tradeIdTo = null, CancellationToken ct = default)
+        public Task<HttpResult<BitvavoUserTrade[]>> GetUserTradesAsync(string market, int? limit = null, DateTime? startTime = null, DateTime? endTime = null, string? tradeIdFrom = null, string? tradeIdTo = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
+            var parameters = new Parameters(BitvavoExchange._parameterSerializationSettings);
             parameters.Add("market", market);
-            parameters.AddOptional("limit", limit);
-            parameters.AddOptionalMilliseconds("start", startTime);
-            parameters.AddOptionalMilliseconds("end", endTime);
-            parameters.AddOptional("tradeIdFrom", tradeIdFrom);
-            parameters.AddOptional("tradeIdTo", tradeIdTo);
+            parameters.Add("limit", limit);
+            parameters.Add("start", startTime);
+            parameters.Add("end", endTime);
+            parameters.Add("tradeIdFrom", tradeIdFrom);
+            parameters.Add("tradeIdTo", tradeIdTo);
 
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/v2/trades", BitvavoExchange.RateLimiter.Rest, 5, true);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v2/trades", BitvavoExchange.RateLimiter.Rest, 5, true);
             return _baseClient.SendAsync<BitvavoUserTrade[]>(request, parameters, ct);
         }
 

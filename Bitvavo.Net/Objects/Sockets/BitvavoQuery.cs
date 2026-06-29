@@ -26,7 +26,7 @@ namespace Bitvavo.Net.Objects.Sockets
     {
         public BitvavoQuery(BitvavoSocketRequest request, bool authenticated, int weight = 1) : base(AssignRequestId(request), authenticated, weight)
         {
-            MessageRouter = MessageRouter.CreateWithoutTopicFilter<BitvavoSubscriptionResponse>(
+            MessageRouter = MessageRouter.CreateForQuery<BitvavoSubscriptionResponse>(
                 request.RequestId.ToString(), HandleMessage);
         }
 
@@ -36,10 +36,10 @@ namespace Bitvavo.Net.Objects.Sockets
             {
                 var code = message.ErrorCode.Value.ToString();
                 var info = BitvavoErrors.RestErrorMapping.GetErrorInfo(code, message.Error);
-                return new CallResult<BitvavoSubscriptionResponse>(new ServerError(code, info));
+                return CallResult.Fail<BitvavoSubscriptionResponse>(new ServerError(code, info));
             }
 
-            return new CallResult<BitvavoSubscriptionResponse>(message, originalData, null);
+            return CallResult.Ok(message, originalData);
         }
 
         private static BitvavoSocketRequest AssignRequestId(BitvavoSocketRequest request)

@@ -17,6 +17,12 @@ namespace Bitvavo.Net
     public static class BitvavoExchange
     {
         internal static JsonSerializerContext _serializerContext = JsonSerializerContextCache.GetOrCreate<BitvavoSourceGenerationContext>();
+        internal static readonly ParameterSerializationSettings _parameterSerializationSettings = new()
+        {
+            Decimal = DecimalSerialization.String,
+            Array = ArrayParametersSerialization.MultipleValues,
+            Sort = false
+        };
 
         /// <summary>
         /// Platform metadata
@@ -28,7 +34,8 @@ namespace Bitvavo.Net
                 "https://bitvavo.com",
                 ["https://docs.bitvavo.com/"],
                 PlatformType.CryptoCurrencyExchange,
-                CentralizationType.Centralized
+                CentralizationType.Centralized,
+                BitvavoEnvironment.All
                 );
 
         /// <summary>

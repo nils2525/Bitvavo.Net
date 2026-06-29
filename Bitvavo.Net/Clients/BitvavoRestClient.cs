@@ -37,7 +37,7 @@ namespace Bitvavo.Net.Clients
         {
             Initialize(options.Value);
 
-            SpotApi = AddApiClient(new BitvavoRestClientSpotApi(_logger, httpClient, options.Value));
+            SpotApi = AddApiClient(new BitvavoRestClientSpotApi(loggerFactory, httpClient, options.Value));
         }
         #endregion
 

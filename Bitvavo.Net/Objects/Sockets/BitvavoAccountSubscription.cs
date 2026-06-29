@@ -45,8 +45,8 @@ namespace Bitvavo.Net.Objects.Sockets
             var routes = new List<MessageRoute>();
             foreach (var market in markets)
             {
-                routes.Add(MessageRoute<BitvavoOrderUpdate>.CreateWithTopicFilter("order", market, DoHandleOrderMessage));
-                routes.Add(MessageRoute<BitvavoFillUpdate>.CreateWithTopicFilter("fill", market, DoHandleFillMessage));
+                routes.Add(MessageRoute.CreateForEvent<BitvavoOrderUpdate>("order", market, DoHandleOrderMessage));
+                routes.Add(MessageRoute.CreateForEvent<BitvavoFillUpdate>("fill", market, DoHandleFillMessage));
             }
             MessageRouter = MessageRouter.Create(routes.ToArray());
         }
@@ -63,8 +63,8 @@ namespace Bitvavo.Net.Objects.Sockets
 
             // Wildcard subscribe means events arrive for any market; route purely by event type.
             MessageRouter = MessageRouter.Create(
-                MessageRoute<BitvavoOrderUpdate>.CreateWithoutTopicFilter("order", DoHandleOrderMessage),
-                MessageRoute<BitvavoFillUpdate>.CreateWithoutTopicFilter("fill", DoHandleFillMessage));
+                MessageRoute.CreateForEvent<BitvavoOrderUpdate>("order", DoHandleOrderMessage),
+                MessageRoute.CreateForEvent<BitvavoFillUpdate>("fill", DoHandleFillMessage));
         }
         #endregion
 
@@ -103,13 +103,13 @@ namespace Bitvavo.Net.Objects.Sockets
         public CallResult DoHandleOrderMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitvavoOrderUpdate message)
         {
             _orderHandler.Invoke(receiveTime, originalData, message);
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
         public CallResult DoHandleFillMessage(SocketConnection connection, DateTime receiveTime, string? originalData, BitvavoFillUpdate message)
         {
             _fillHandler.Invoke(receiveTime, originalData, message);
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
         #endregion
     }
