@@ -56,6 +56,6 @@
     <ProjectReference Include="..\..\CryptoExchange.Net\CryptoExchange.Net\CryptoExchange.Net.csproj" />
   </ItemGroup>
   <ItemGroup Condition="!Exists('..\..\CryptoExchange.Net\CryptoExchange.Net\CryptoExchange.Net.csproj')">
-    <PackageReference Include="CryptoExchange.Net" Version="12.0.1" />
+    <PackageReference Include="CryptoExchange.Net" Version="12.0.2" />
   </ItemGroup>
 </Project>
