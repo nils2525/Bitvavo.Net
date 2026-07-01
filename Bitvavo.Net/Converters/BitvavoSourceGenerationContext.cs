@@ -1,5 +1,6 @@
 using Bitvavo.Net.Objects.Models;
 using Bitvavo.Net.Objects.Models.Socket;
+using CryptoExchange.Net.Objects;
 using System.Text.Json.Serialization;
 
 namespace Bitvavo.Net.Converters
@@ -53,6 +54,7 @@ namespace Bitvavo.Net.Converters
     [JsonSerializable(typeof(BitvavoAuthResponse))]
 
     [JsonSerializable(typeof(IDictionary<string, object>))]
+    [JsonSerializable(typeof(Parameters))]
     [JsonSerializable(typeof(string))]
     [JsonSerializable(typeof(string[]))]
     [JsonSerializable(typeof(bool))]
