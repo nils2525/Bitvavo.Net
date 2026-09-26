@@ -26,7 +26,7 @@ namespace Bitvavo.Net
         public string Description => "Limit based on Bitvavo REST rate-limit response headers";
 
         /// <inheritdoc />
-        public LimitCheck Check(RateLimitItemType type, RequestDefinition definition, string? apiKey, int requestWeight, string? keySuffix)
+        public LimitCheck Check(RateLimitItemType type, RequestDefinition definition, string? apiKey, int requestWeight, string? keySuffix, double allowedRateRatio)
         {
             if (type != RateLimitItemType.Request)
                 return LimitCheck.NotApplicable;
@@ -44,7 +44,8 @@ namespace Bitvavo.Net
                     return LimitCheck.NotApplicable;
                 }
 
-                if (state.Remaining >= requestWeight)
+                // Reserve the requested share of the server-reported budget for higher-priority calls.
+                if (state.Limit - state.Remaining + requestWeight <= state.Limit * allowedRateRatio)
                     return LimitCheck.NotApplicable;
 
                 return LimitCheck.Needed(state.ResetAt - now + _windowBuffer, state.Limit, _period, state.Limit - state.Remaining);
