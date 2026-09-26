@@ -5,10 +5,26 @@ using System.Text.Json.Serialization;
 namespace Bitvavo.Net.Objects.Models
 {
     /// <summary>
-    /// Order as returned by the Bitvavo create-order, get-order, get-orders and get-open-orders endpoints.
+    /// Order as returned by the Bitvavo create-order, update-order, get-order, get-orders and get-open-orders endpoints.
     /// </summary>
     public record BitvavoOrder
     {
+        /// <summary>["<c>createdNs</c>"] Order creation time as a Unix timestamp in nanoseconds</summary>
+        [JsonPropertyName("createdNs")]
+        public long? CreatedNs { get; set; }
+        /// <summary>["<c>updatedNs</c>"] Last update time as a Unix timestamp in nanoseconds</summary>
+        [JsonPropertyName("updatedNs")]
+        public long? UpdatedNs { get; set; }
+        /// <summary>["<c>codGroupId</c>"] Cancel-on-disconnect order group identifier</summary>
+        [JsonPropertyName("codGroupId")]
+        public int? CodGroupId { get; set; }
+        /// <summary>["<c>restatementReason</c>"] Exchange reason for changing the order status</summary>
+        [JsonPropertyName("restatementReason")]
+        public string? RestatementReason { get; set; }
+        /// <summary>["<c>disableMarketProtection</c>"] Deprecated market-protection setting; must be false</summary>
+        [JsonPropertyName("disableMarketProtection")]
+        public bool? DisableMarketProtection { get; set; }
+
         /// <summary>
         /// ["<c>orderId</c>"] Bitvavo order identifier (UUID)
         /// </summary>

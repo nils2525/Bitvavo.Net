@@ -10,6 +10,27 @@ namespace Bitvavo.Net.Interfaces.Clients.SpotApi
     public interface IBitvavoRestClientSpotApiTrading
     {
         /// <summary>
+        /// Update an existing limit or untriggered trigger order. The order is briefly removed from the book during the update.
+        /// <para>Docs: <a href="https://docs.bitvavo.com/docs/rest-api/update-order/" /><br />Endpoint: PUT /v2/order</para>
+        /// </summary>
+        /// <param name="market">["<c>market</c>"] Market name</param>
+        /// <param name="operatorId">["<c>operatorId</c>"] Trader/bot identifier</param>
+        /// <param name="orderId">["<c>orderId</c>"] Existing exchange order identifier</param>
+        /// <param name="clientOrderId">["<c>clientOrderId</c>"] Existing client order identifier; takes precedence over orderId</param>
+        /// <param name="amount">["<c>amount</c>"] New total base quantity, including previous fills</param>
+        /// <param name="price">["<c>price</c>"] New limit price</param>
+        /// <param name="amountQuote">["<c>amountQuote</c>"] Quote quantity for untriggered stop-loss/take-profit orders</param>
+        /// <param name="amountRemaining">["<c>amountRemaining</c>"] New remaining base quantity; prefer amount to avoid races with fills</param>
+        /// <param name="triggerAmount">["<c>triggerAmount</c>"] New trigger price for an untriggered stop order</param>
+        /// <param name="timeInForce">["<c>timeInForce</c>"] New time in force for an untriggered order</param>
+        /// <param name="selfTradePrevention">["<c>selfTradePrevention</c>"] Self-trade prevention strategy</param>
+        /// <param name="postOnly">["<c>postOnly</c>"] Maker-only flag</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<BitvavoOrder>> UpdateOrderAsync(string market, long operatorId, string? orderId = null, string? clientOrderId = null,
+            decimal? amount = null, decimal? price = null, decimal? amountQuote = null, decimal? amountRemaining = null,
+            decimal? triggerAmount = null, TimeInForce? timeInForce = null, string? selfTradePrevention = null, bool? postOnly = null, CancellationToken ct = default);
+
+        /// <summary>
         /// Place a limit order.
         /// <para>
         /// Docs:<br />

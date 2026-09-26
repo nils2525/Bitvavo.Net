@@ -16,6 +16,36 @@ namespace Bitvavo.Net.Clients.SpotApi
             _baseClient = baseClient;
         }
 
+        #region Update Order
+
+        /// <inheritdoc />
+        public Task<HttpResult<BitvavoOrder>> UpdateOrderAsync(string market, long operatorId, string? orderId = null, string? clientOrderId = null,
+            decimal? amount = null, decimal? price = null, decimal? amountQuote = null, decimal? amountRemaining = null,
+            decimal? triggerAmount = null, TimeInForce? timeInForce = null, string? selfTradePrevention = null, bool? postOnly = null, CancellationToken ct = default)
+        {
+            if (string.IsNullOrEmpty(orderId) && string.IsNullOrEmpty(clientOrderId))
+                throw new ArgumentException("Either orderId or clientOrderId must be supplied.");
+
+            var parameters = new Parameters(BitvavoExchange._parameterSerializationSettings);
+            parameters.Add("market", market);
+            parameters.Add("operatorId", operatorId);
+            parameters.Add("orderId", orderId);
+            parameters.Add("clientOrderId", clientOrderId);
+            parameters.Add("amount", amount);
+            parameters.Add("price", price);
+            parameters.Add("amountQuote", amountQuote);
+            parameters.Add("amountRemaining", amountRemaining);
+            parameters.Add("triggerAmount", triggerAmount);
+            parameters.Add("timeInForce", timeInForce);
+            parameters.Add("selfTradePrevention", selfTradePrevention);
+            parameters.Add("postOnly", postOnly);
+
+            var request = _definitions.GetOrCreate(HttpMethod.Put, _baseClient.BaseAddress, "/v2/order", BitvavoExchange.RateLimiter.Rest, 1, true);
+            return _baseClient.SendAsync<BitvavoOrder>(request, parameters, ct);
+        }
+
+        #endregion
+
         #region Place Limit Order
 
         /// <inheritdoc />
