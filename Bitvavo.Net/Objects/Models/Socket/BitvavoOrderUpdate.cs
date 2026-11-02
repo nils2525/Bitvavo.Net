@@ -46,6 +46,9 @@ namespace Bitvavo.Net.Objects.Models.Socket
         /// </summary>
         [JsonPropertyName("status")]
         public OrderStatus Status { get; set; }
+        /// <summary>["<c>restatementReason</c>"] Exchange reason for changing the order status, when supplied</summary>
+        [JsonPropertyName("restatementReason")]
+        public string? RestatementReason { get; set; }
         /// <summary>
         /// ["<c>side</c>"] Order side
         /// </summary>
