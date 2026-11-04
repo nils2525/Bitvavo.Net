@@ -34,7 +34,7 @@
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
   <ItemGroup Label="Deterministic Build" Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.401">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -56,6 +56,6 @@
     <ProjectReference Include="..\..\CryptoExchange.Net\CryptoExchange.Net\CryptoExchange.Net.csproj" />
   </ItemGroup>
   <ItemGroup Condition="!Exists('..\..\CryptoExchange.Net\CryptoExchange.Net\CryptoExchange.Net.csproj')">
-    <PackageReference Include="CryptoExchange.Net" Version="13.2.1" />
+    <PackageReference Include="CryptoExchange.Net" Version="13.2.3" />
   </ItemGroup>
 </Project>
