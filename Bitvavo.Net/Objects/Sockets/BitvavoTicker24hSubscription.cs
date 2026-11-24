@@ -23,7 +23,15 @@ namespace Bitvavo.Net.Objects.Sockets
             _markets = markets;
             _handler = handler;
 
-            MessageRouter = MessageRouter.CreateForEvent<BitvavoTicker24hUpdate>(["ticker24h"], DoHandleMessage);
+            // CryptoExchange.Net skips the subscribe request of a subscription whose routes an earlier subscription on
+            // the same connection already covers. ticker24h updates carry no topic, so every market batch would look
+            // like the first one and only that batch would ever be subscribed. The second route is keyed by this batch's
+            // market set: it never matches an update, because updates have no topic, but only an identical batch counts
+            // as covered.
+            var marketSetKey = "markets:" + string.Join(',', markets.Order(StringComparer.Ordinal));
+            MessageRouter = MessageRouter.Create(
+                MessageRoute.CreateForEvent<BitvavoTicker24hUpdate>("ticker24h", DoHandleMessage),
+                MessageRoute.CreateForEvent<BitvavoTicker24hUpdate>("ticker24h", marketSetKey, DoHandleMessage));
         }
 
         protected override Query? GetSubQuery(SocketConnection connection)
