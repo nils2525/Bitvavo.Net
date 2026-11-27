@@ -15,6 +15,9 @@ namespace Bitvavo.Net.Objects.Sockets
         private readonly Action<DateTime, string?, BitvavoTicker24hUpdate> _handler;
         private readonly string[] _markets;
 
+        /// <inheritdoc />
+        public override string[] SubscriptionIdentifiers { get; }
+
         public BitvavoTicker24hSubscription(
             ILogger logger,
             string[] markets,
@@ -23,15 +26,13 @@ namespace Bitvavo.Net.Objects.Sockets
             _markets = markets;
             _handler = handler;
 
-            // CryptoExchange.Net skips the subscribe request of a subscription whose routes an earlier subscription on
-            // the same connection already covers. ticker24h updates carry no topic, so every market batch would look
-            // like the first one and only that batch would ever be subscribed. The second route is keyed by this batch's
-            // market set: it never matches an update, because updates have no topic, but only an identical batch counts
-            // as covered.
-            var marketSetKey = "markets:" + string.Join(',', markets.Order(StringComparer.Ordinal));
-            MessageRouter = MessageRouter.Create(
-                MessageRoute.CreateForEvent<BitvavoTicker24hUpdate>("ticker24h", DoHandleMessage),
-                MessageRoute.CreateForEvent<BitvavoTicker24hUpdate>("ticker24h", marketSetKey, DoHandleMessage));
+            // ticker24h updates carry no topic, so the route alone would give every market batch the same identity.
+            // CryptoExchange.Net would then treat a second batch as already subscribed and never send its markets, while a
+            // route-derived identity per batch would force each batch onto its own connection. Identifying the subscription
+            // by its markets lets disjoint batches share a connection, serves an identical market set once and keeps
+            // partially overlapping batches apart.
+            SubscriptionIdentifiers = markets.Select(market => "ticker24h" + market).ToArray();
+            MessageRouter = MessageRouter.CreateForEvent<BitvavoTicker24hUpdate>("ticker24h", DoHandleMessage);
         }
 
         protected override Query? GetSubQuery(SocketConnection connection)
